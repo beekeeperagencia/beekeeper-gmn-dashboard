@@ -533,26 +533,24 @@ let accessToken = null;
 function initGoogleAuth() {
   const script = document.createElement('script');
   script.src = 'https://accounts.google.com/gsi/client';
+  script.async = true;
+  script.defer = true;
   script.onload = () => {
     tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
       scope: SCOPES,
       callback: (response) => {
-        if (response.error) { showError('Erro na autenticação: ' + response.error); return; }
+        if (response.error) {
+          showError('Erro na autenticação: ' + response.error);
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('login-screen').style.display = 'flex';
+          return;
+        }
         accessToken = response.access_token;
-        localStorage.setItem('gmn_token', accessToken);
         fetchUserInfo();
         loadDashboard();
       }
     });
-
-    // Restaurar token salvo
-    const saved = localStorage.getItem('gmn_token');
-    if (saved) {
-      accessToken = saved;
-      fetchUserInfo();
-      loadDashboard();
-    }
   };
   document.head.appendChild(script);
 }
@@ -561,7 +559,6 @@ function login() { tokenClient.requestAccessToken(); }
 
 function logout() {
   accessToken = null;
-  localStorage.removeItem('gmn_token');
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('dashboard').style.display = 'none';
   document.getElementById('btn-login').style.display = 'block';

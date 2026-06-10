@@ -535,27 +535,34 @@ function initGoogleAuth() {
   script.src = 'https://accounts.google.com/gsi/client';
   script.async = true;
   script.defer = true;
-  script.onload = () => {
-    tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: CLIENT_ID,
-      scope: SCOPES,
-      callback: (response) => {
-        if (response.error) {
-          showError('Erro na autenticação: ' + response.error);
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('login-screen').style.display = 'flex';
-          return;
-        }
-        accessToken = response.access_token;
-        fetchUserInfo();
-        loadDashboard();
-      }
-    });
-  };
   document.head.appendChild(script);
 }
 
-function login() { tokenClient.requestAccessToken(); }
+function login() {
+  if (typeof google === 'undefined') {
+    showError('SDK do Google ainda não carregou. Aguarde alguns segundos e tente novamente.');
+    return;
+  }
+
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (response) => {
+      if (response.error || !response.access_token) {
+        showError('Erro na autenticação: ' + (response.error || 'token não recebido'));
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('login-screen').style.display = 'flex';
+        return;
+      }
+      accessToken = response.access_token;
+      console.log('Token recebido:', accessToken.substring(0, 20) + '...');
+      fetchUserInfo();
+      loadDashboard();
+    }
+  });
+
+  tokenClient.requestAccessToken({ prompt: 'consent' });
+}
 
 function logout() {
   accessToken = null;

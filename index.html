@@ -30,7 +30,6 @@
     min-height: 100vh;
   }
 
-  /* HEADER */
   header {
     display: flex;
     align-items: center;
@@ -50,7 +49,6 @@
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
     font-size: 18px;
-    letter-spacing: -0.3px;
   }
 
   .logo-icon {
@@ -87,7 +85,6 @@
     border: 2px solid var(--honey);
   }
 
-  /* BUTTONS */
   .btn {
     padding: 9px 20px;
     border-radius: 8px;
@@ -99,38 +96,18 @@
     font-family: 'Inter', sans-serif;
   }
 
-  .btn-primary {
-    background: var(--honey);
-    color: var(--black);
-  }
-
+  .btn-primary { background: var(--honey); color: var(--black); }
   .btn-primary:hover { background: var(--honey-dark); }
+  .btn-outline { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--honey); color: var(--honey); }
+  .btn-sm { padding: 6px 14px; font-size: 13px; }
 
-  .btn-outline {
-    background: transparent;
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-  }
-
-  .btn-outline:hover {
-    border-color: var(--honey);
-    color: var(--honey);
-  }
-
-  .btn-sm {
-    padding: 6px 14px;
-    font-size: 13px;
-  }
-
-  /* LOGIN SCREEN */
   #login-screen {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: calc(100vh - 65px);
-    gap: 24px;
-    text-align: center;
     padding: 32px;
   }
 
@@ -141,18 +118,14 @@
     padding: 48px 56px;
     max-width: 420px;
     width: 100%;
-  }
-
-  .login-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
+    text-align: center;
   }
 
   .login-card h2 {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 22px;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin: 16px 0 8px;
   }
 
   .login-card p {
@@ -162,17 +135,33 @@
     margin-bottom: 28px;
   }
 
-  /* MAIN DASHBOARD */
-  #dashboard {
+  #loading {
     display: none;
-    padding: 32px;
-    max-width: 1400px;
-    margin: 0 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 65px);
+    gap: 16px;
+    color: var(--text-muted);
+    font-size: 14px;
   }
+
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--honey);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #dashboard { display: none; padding: 32px; max-width: 1400px; margin: 0 auto; }
 
   .dashboard-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     margin-bottom: 28px;
   }
@@ -183,13 +172,8 @@
     font-weight: 700;
   }
 
-  .dashboard-header p {
-    color: var(--text-muted);
-    font-size: 14px;
-    margin-top: 4px;
-  }
+  .dashboard-header p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
 
-  /* SUMMARY CARDS */
   .summary-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -219,26 +203,18 @@
     color: var(--honey);
   }
 
-  .summary-card .sub {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
+  .summary-card .sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-  /* CLIENTS GRID */
   .section-title {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
   }
 
   .clients-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
     gap: 20px;
   }
 
@@ -266,17 +242,14 @@
     font-size: 15px;
     font-weight: 600;
     margin-bottom: 4px;
-    line-height: 1.3;
   }
 
-  .client-category {
-    font-size: 12px;
-    color: var(--text-muted);
-  }
+  .client-category { font-size: 12px; color: var(--text-muted); }
+  .client-address { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
 
   .score-badge {
-    min-width: 48px;
-    height: 48px;
+    min-width: 56px;
+    height: 56px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -284,7 +257,7 @@
     justify-content: center;
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 20px;
     flex-shrink: 0;
   }
 
@@ -292,74 +265,65 @@
   .score-mid  { background: rgba(234,179,8,0.15);  color: var(--yellow); }
   .score-low  { background: rgba(239,68,68,0.15);  color: var(--red); }
 
-  .score-label {
-    font-size: 9px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    margin-top: 1px;
-  }
+  .score-label { font-size: 9px; font-weight: 500; text-transform: uppercase; margin-top: 1px; }
 
-  .client-card-body {
-    padding: 16px 24px 20px;
-  }
+  .client-card-body { padding: 16px 24px 20px; }
 
+  /* SCORE BAR */
+  .score-bar-wrap { margin-bottom: 16px; }
+  .score-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+  .score-bar-bg { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .score-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+
+  /* METRICS */
   .metrics-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 16px;
   }
 
   .metric {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 10px 8px;
     text-align: center;
   }
 
   .metric-value {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
-    color: var(--text);
   }
 
-  .metric-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 2px;
-  }
+  .metric-value.good { color: var(--green); }
+  .metric-value.warn { color: var(--yellow); }
+  .metric-value.bad  { color: var(--red); }
 
-  .stars {
-    color: var(--honey);
-    font-size: 13px;
-  }
+  .metric-label { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
 
   /* CHECKLIST */
-  .checklist {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
   }
 
   .check-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 12px;
+    gap: 6px;
+    font-size: 11px;
     color: var(--text-muted);
+    padding: 4px 0;
   }
 
-  .check-item.ok { color: var(--green); }
+  .check-item.ok   { color: var(--green); }
   .check-item.warn { color: var(--yellow); }
-  .check-item.bad { color: var(--red); }
+  .check-item.bad  { color: var(--red); }
 
-  .check-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .check-item.ok  .check-dot { background: var(--green); }
+  .check-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .check-item.ok   .check-dot { background: var(--green); }
   .check-item.warn .check-dot { background: var(--yellow); }
   .check-item.bad  .check-dot { background: var(--red); }
 
@@ -380,39 +344,10 @@
     letter-spacing: 0.3px;
   }
 
-  .status-verified { background: rgba(34,197,94,0.15); color: var(--green); }
-  .status-pending  { background: rgba(234,179,8,0.15);  color: var(--yellow); }
-  .status-suspended { background: rgba(239,68,68,0.15); color: var(--red); }
+  .status-verified  { background: rgba(34,197,94,0.15); color: var(--green); }
+  .status-pending   { background: rgba(234,179,8,0.15);  color: var(--yellow); }
+  .status-suspended { background: rgba(239,68,68,0.15);  color: var(--red); }
 
-  .last-updated {
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
-  /* LOADING */
-  #loading {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: calc(100vh - 65px);
-    gap: 16px;
-    color: var(--text-muted);
-    font-size: 14px;
-  }
-
-  .spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid var(--border);
-    border-top-color: var(--honey);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ERROR */
   .error-banner {
     background: rgba(239,68,68,0.1);
     border: 1px solid rgba(239,68,68,0.3);
@@ -423,7 +358,6 @@
     margin-bottom: 20px;
   }
 
-  /* EMPTY STATE */
   .empty-state {
     text-align: center;
     padding: 60px 32px;
@@ -434,11 +368,13 @@
 
   .empty-state .emoji { font-size: 40px; margin-bottom: 12px; }
 
-  /* DIVIDER */
-  .divider {
-    width: 1px;
-    height: 20px;
-    background: var(--border);
+  .section-divider {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 12px 0 6px;
   }
 
   @media (max-width: 768px) {
@@ -459,7 +395,6 @@
     <div id="user-info">
       <img id="user-avatar" src="" alt="avatar">
       <span id="user-name"></span>
-      <div class="divider"></div>
     </div>
     <button class="btn btn-outline btn-sm" id="btn-refresh" style="display:none" onclick="loadDashboard()">↻ Atualizar</button>
     <button class="btn btn-outline btn-sm" id="btn-logout" style="display:none" onclick="logout()">Sair</button>
@@ -467,35 +402,32 @@
   </div>
 </header>
 
-<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-card">
-    <div class="login-icon">🐝</div>
+    <div style="font-size:48px">🐝</div>
     <h2>GMN Dashboard</h2>
-    <p>Conecte a conta Google da Beekeeper para visualizar e analisar o desempenho dos GMNs de todos os seus clientes.</p>
+    <p>Conecte a conta Google da Beekeeper para analisar todos os GMNs dos seus clientes.</p>
     <button class="btn btn-primary" onclick="login()" style="width:100%">Conectar com Google</button>
   </div>
 </div>
 
-<!-- LOADING -->
 <div id="loading">
   <div class="spinner"></div>
-  <span>Carregando dados dos clientes...</span>
+  <span id="loading-msg">Carregando dados dos clientes...</span>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard">
   <div class="dashboard-header">
     <div>
       <h1>Visão geral dos clientes</h1>
-      <p id="dashboard-subtitle">— perfis carregados</p>
+      <p id="dashboard-subtitle">carregando...</p>
     </div>
     <button class="btn btn-primary btn-sm" onclick="loadDashboard()">↻ Atualizar tudo</button>
   </div>
 
   <div id="error-container"></div>
 
-  <div class="summary-grid" id="summary-grid">
+  <div class="summary-grid">
     <div class="summary-card">
       <div class="label">Total de clientes</div>
       <div class="value" id="total-clients">—</div>
@@ -526,10 +458,25 @@
 const CLIENT_ID = '251358830966-umpotv5dja83lichui53n64j8pfu60u2.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/business.manage';
 
-let tokenClient;
 let accessToken = null;
 
-// ─── OAUTH ─────────────────────────────────────────────────────────────────
+// ─── PESOS DO SCORE BEEKEEPER ─────────────────────────────────────────────
+const WEIGHTS = {
+  nome:              5,
+  descricao:        10,
+  categoriaMain:    10,
+  categoriaSec:      5,
+  servicos:         10,
+  produtos:         10,
+  posts:            10,
+  postsFrequencia:  10,
+  fotos:            10,
+  fotosFrequencia:  10,
+  avaliacoes:        5,
+  avaliacoesFreq:    5,
+};
+
+// ─── OAUTH ────────────────────────────────────────────────────────────────
 function initGoogleAuth() {
   const script = document.createElement('script');
   script.src = 'https://accounts.google.com/gsi/client';
@@ -540,11 +487,10 @@ function initGoogleAuth() {
 
 function login() {
   if (typeof google === 'undefined') {
-    showError('SDK do Google ainda não carregou. Aguarde alguns segundos e tente novamente.');
+    showError('SDK do Google ainda não carregou. Aguarde e tente novamente.');
     return;
   }
-
-  tokenClient = google.accounts.oauth2.initTokenClient({
+  const tc = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
     scope: SCOPES,
     callback: (response) => {
@@ -555,13 +501,11 @@ function login() {
         return;
       }
       accessToken = response.access_token;
-      console.log('Token recebido:', accessToken.substring(0, 20) + '...');
       fetchUserInfo();
       loadDashboard();
     }
   });
-
-  tokenClient.requestAccessToken({ prompt: 'consent' });
+  tc.requestAccessToken({ prompt: 'consent' });
 }
 
 function logout() {
@@ -586,7 +530,7 @@ async function fetchUserInfo() {
   } catch(e) {}
 }
 
-// ─── API HELPER ────────────────────────────────────────────────────────────
+// ─── API HELPER ───────────────────────────────────────────────────────────
 async function gFetch(url) {
   const res = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
   if (res.status === 401) { logout(); throw new Error('Token expirado'); }
@@ -594,7 +538,7 @@ async function gFetch(url) {
   return res.json();
 }
 
-// ─── DASHBOARD ─────────────────────────────────────────────────────────────
+// ─── DASHBOARD ────────────────────────────────────────────────────────────
 async function loadDashboard() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('loading').style.display = 'flex';
@@ -602,49 +546,122 @@ async function loadDashboard() {
   document.getElementById('error-container').innerHTML = '';
 
   try {
-    // Buscar contas
+    setLoading('Buscando contas...');
     const accountsData = await gFetch('https://mybusinessaccountmanagement.googleapis.com/v1/accounts');
     const accounts = accountsData.accounts || [];
 
-    if (accounts.length === 0) {
-      showError('Nenhuma conta do Google Meu Negócio encontrada. Verifique se a Beekeeper foi adicionada como gestora dos perfis.');
+    if (!accounts.length) {
+      showError('Nenhuma conta GMN encontrada. Adicione a Beekeeper como gestora nos perfis dos clientes.');
       document.getElementById('loading').style.display = 'none';
       document.getElementById('dashboard').style.display = 'block';
-      document.getElementById('clients-grid').innerHTML = `<div class="empty-state"><div class="emoji">📭</div><p>Nenhum perfil encontrado.<br>Adicione a Beekeeper como gestora nos GMNs dos clientes.</p></div>`;
+      document.getElementById('clients-grid').innerHTML = `<div class="empty-state"><div class="emoji">📭</div><p>Nenhum perfil encontrado.</p></div>`;
       return;
     }
 
-    // Buscar localizações de todas as contas
+    setLoading('Buscando perfis...');
     let allLocations = [];
     for (const account of accounts) {
       try {
-        const locData = await gFetch(`https://mybusinessbusinessinformation.googleapis.com/v1/${account.name}/locations?readMask=name,title,storefrontAddress,phoneNumbers,websiteUri,regularHours,categories,metadata,profile`);
-        if (locData.locations) allLocations = allLocations.concat(locData.locations.map(l => ({ ...l, accountName: account.accountName })));
-      } catch(e) {}
+        const locData = await gFetch(
+          `https://mybusinessbusinessinformation.googleapis.com/v1/${account.name}/locations?readMask=name,title,storefrontAddress,phoneNumbers,websiteUri,regularHours,categories,metadata,profile,serviceItems`
+        );
+        if (locData.locations) {
+          allLocations = allLocations.concat(locData.locations.map(l => ({ ...l, _account: account.name })));
+        }
+      } catch(e) { console.warn('Erro em conta:', account.name, e); }
+    }
+
+    // Buscar reviews e media para cada location
+    setLoading('Buscando avaliações e fotos...');
+    for (let i = 0; i < allLocations.length; i++) {
+      const loc = allLocations[i];
+      try {
+        const rev = await gFetch(`https://mybusinessaccountmanagement.googleapis.com/v1/${loc.name}/reviews?pageSize=100`);
+        loc._reviews = rev.reviews || [];
+        loc._avgRating = rev.averageRating || 0;
+        loc._totalReviews = rev.totalReviewCount || 0;
+      } catch(e) { loc._reviews = []; loc._avgRating = 0; loc._totalReviews = 0; }
+
+      try {
+        const med = await gFetch(`https://mybusinessaccountmanagement.googleapis.com/v1/${loc.name}/media?pageSize=100`);
+        loc._media = med.mediaItems || [];
+      } catch(e) { loc._media = []; }
+
+      try {
+        const posts = await gFetch(`https://mybusinessaccountmanagement.googleapis.com/v1/${loc.name}/localPosts?pageSize=100`);
+        loc._posts = posts.localPosts || [];
+      } catch(e) { loc._posts = []; }
     }
 
     renderDashboard(allLocations);
+
   } catch(e) {
-    showError('Erro ao carregar dados: ' + e.message);
+    showError('Erro ao carregar: ' + e.message);
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
   }
 }
 
+// ─── SCORE ────────────────────────────────────────────────────────────────
 function calcScore(loc) {
-  let score = 0;
-  if (loc.title) score += 10;
-  if (loc.storefrontAddress?.addressLines?.length) score += 10;
-  if (loc.phoneNumbers?.primaryPhone) score += 10;
-  if (loc.websiteUri) score += 10;
-  if (loc.regularHours?.periods?.length) score += 15;
-  if (loc.categories?.primaryCategory) score += 10;
-  if (loc.categories?.additionalCategories?.length) score += 5;
-  if (loc.profile?.description) score += 15;
-  if (loc.metadata?.mapsUri) score += 5;
-  // Fotos e avaliações são pontuadas separadamente via API de reviews
-  score += 10; // base para perfil existente
-  return Math.min(score, 100);
+  const earned = {};
+  const now = new Date();
+  const oneWeekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+  const twoWeeksAgo = new Date(now - 14 * 24 * 60 * 60 * 1000);
+
+  // Nome
+  earned.nome = loc.title ? WEIGHTS.nome : 0;
+
+  // Descrição
+  earned.descricao = loc.profile?.description ? WEIGHTS.descricao : 0;
+
+  // Categoria principal
+  earned.categoriaMain = loc.categories?.primaryCategory ? WEIGHTS.categoriaMain : 0;
+
+  // Categorias secundárias
+  earned.categoriaSec = (loc.categories?.additionalCategories?.length > 0) ? WEIGHTS.categoriaSec : 0;
+
+  // Serviços
+  earned.servicos = (loc.serviceItems?.length > 0) ? WEIGHTS.servicos : 0;
+
+  // Produtos — a API retorna via outro endpoint, marcamos como parcial se tiver serviceItems
+  earned.produtos = (loc._products?.length > 0) ? WEIGHTS.produtos : 0;
+
+  // Posts: existem posts?
+  earned.posts = (loc._posts?.length > 0) ? WEIGHTS.posts : 0;
+
+  // Posts: frequência 2x por semana (4 posts em 2 semanas)
+  const recentPosts = (loc._posts || []).filter(p => {
+    const d = new Date(p.createTime || p.updateTime);
+    return d >= twoWeeksAgo;
+  });
+  earned.postsFrequencia = recentPosts.length >= 4 ? WEIGHTS.postsFrequencia : 
+                           recentPosts.length >= 2 ? Math.round(WEIGHTS.postsFrequencia * 0.5) : 0;
+
+  // Fotos: existem fotos?
+  earned.fotos = (loc._media?.length > 0) ? WEIGHTS.fotos : 0;
+
+  // Fotos: frequência 2x por semana (4 fotos em 2 semanas)
+  const recentMedia = (loc._media || []).filter(m => {
+    const d = new Date(m.createTime);
+    return d >= twoWeeksAgo;
+  });
+  earned.fotosFrequencia = recentMedia.length >= 4 ? WEIGHTS.fotosFrequencia :
+                           recentMedia.length >= 2 ? Math.round(WEIGHTS.fotosFrequencia * 0.5) : 0;
+
+  // Avaliações: existem?
+  earned.avaliacoes = (loc._totalReviews > 0) ? WEIGHTS.avaliacoes : 0;
+
+  // Avaliações: frequência 5 por semana
+  const recentReviews = (loc._reviews || []).filter(r => {
+    const d = new Date(r.createTime);
+    return d >= oneWeekAgo;
+  });
+  earned.avaliacoesFreq = recentReviews.length >= 5 ? WEIGHTS.avaliacoesFreq :
+                          recentReviews.length >= 2 ? Math.round(WEIGHTS.avaliacoesFreq * 0.5) : 0;
+
+  const total = Object.values(earned).reduce((a, b) => a + b, 0);
+  return { total, earned };
 }
 
 function scoreClass(s) {
@@ -653,94 +670,131 @@ function scoreClass(s) {
   return 'score-low';
 }
 
-function statusInfo(loc) {
-  const status = loc.metadata?.newReviewUri ? 'verified' : 'pending';
-  if (status === 'verified') return { cls: 'status-verified', label: 'Verificado' };
-  return { cls: 'status-pending', label: 'Pendente' };
+function barColor(s) {
+  if (s >= 80) return 'var(--green)';
+  if (s >= 60) return 'var(--yellow)';
+  return 'var(--red)';
 }
 
-function renderChecklist(loc) {
-  const items = [
-    { label: 'Endereço completo', ok: !!loc.storefrontAddress?.addressLines?.length },
-    { label: 'Telefone cadastrado', ok: !!loc.phoneNumbers?.primaryPhone },
-    { label: 'Site vinculado', ok: !!loc.websiteUri },
-    { label: 'Horários configurados', ok: !!(loc.regularHours?.periods?.length) },
-    { label: 'Descrição preenchida', ok: !!loc.profile?.description },
-    { label: 'Categoria secundária', ok: !!(loc.categories?.additionalCategories?.length) },
-  ];
-
-  return items.map(i => `
-    <div class="check-item ${i.ok ? 'ok' : 'bad'}">
-      <div class="check-dot"></div>
-      ${i.label}
-    </div>
-  `).join('');
+function metricClass(val, good, warn) {
+  if (val >= good) return 'good';
+  if (val >= warn) return 'warn';
+  return 'bad';
 }
 
+// ─── RENDER ───────────────────────────────────────────────────────────────
 function renderDashboard(locations) {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
 
-  const scores = locations.map(calcScore);
-  const avgScore = scores.length ? Math.round(scores.reduce((a,b) => a+b, 0) / scores.length) : 0;
+  const scores = locations.map(l => calcScore(l).total);
+  const avgScore = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
   const needAttention = scores.filter(s => s < 70).length;
+  const ratings = locations.map(l => l._avgRating).filter(r => r > 0);
+  const avgRating = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : '—';
 
   document.getElementById('total-clients').textContent = locations.length;
-  document.getElementById('avg-rating').textContent = '—';
+  document.getElementById('avg-rating').textContent = avgRating;
   document.getElementById('avg-score').textContent = avgScore;
   document.getElementById('need-attention').textContent = needAttention;
   document.getElementById('dashboard-subtitle').textContent = `${locations.length} perfil${locations.length !== 1 ? 's' : ''} carregado${locations.length !== 1 ? 's' : ''}`;
 
+  const now = new Date();
+  const oneWeekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+  const twoWeeksAgo = new Date(now - 14 * 24 * 60 * 60 * 1000);
+
   const grid = document.getElementById('clients-grid');
 
-  if (locations.length === 0) {
+  if (!locations.length) {
     grid.innerHTML = `<div class="empty-state"><div class="emoji">📭</div><p>Nenhum perfil encontrado.</p></div>`;
     return;
   }
 
-  grid.innerHTML = locations.map((loc, i) => {
-    const score = scores[i];
-    const sCls = scoreClass(score);
-    const st = statusInfo(loc);
+  // Ordenar por score crescente (piores primeiro)
+  locations.sort((a, b) => calcScore(a).total - calcScore(b).total);
+
+  grid.innerHTML = locations.map((loc) => {
+    const { total, earned } = calcScore(loc);
+    const sCls = scoreClass(total);
     const phone = loc.phoneNumbers?.primaryPhone || '—';
-    const address = loc.storefrontAddress?.addressLines?.join(', ') || '—';
+    const address = loc.storefrontAddress?.addressLines?.join(', ') || '';
+    const city = loc.storefrontAddress?.locality || '';
     const category = loc.categories?.primaryCategory?.displayName || '—';
+    const catSec = loc.categories?.additionalCategories?.length || 0;
+    const services = loc.serviceItems?.length || 0;
+    const products = loc._products?.length || 0;
+    const totalReviews = loc._totalReviews || 0;
+    const avgRat = loc._avgRating ? loc._avgRating.toFixed(1) : '—';
+    const totalMedia = loc._media?.length || 0;
+    const totalPosts = loc._posts?.length || 0;
+
+    const recentPosts = (loc._posts || []).filter(p => new Date(p.createTime || p.updateTime) >= twoWeeksAgo).length;
+    const recentMedia = (loc._media || []).filter(m => new Date(m.createTime) >= twoWeeksAgo).length;
+    const recentReviews = (loc._reviews || []).filter(r => new Date(r.createTime) >= oneWeekAgo).length;
+
+    const verified = loc.metadata?.newReviewUri ? true : false;
+
+    const checks = [
+      { label: 'Nome',            ok: !!loc.title,                                    pts: earned.nome },
+      { label: 'Descrição',       ok: !!loc.profile?.description,                     pts: earned.descricao },
+      { label: 'Categoria principal', ok: !!loc.categories?.primaryCategory,          pts: earned.categoriaMain },
+      { label: 'Categorias sec.', ok: catSec > 0,                                     pts: earned.categoriaSec },
+      { label: 'Serviços',        ok: services > 0,                                   pts: earned.servicos },
+      { label: 'Produtos',        ok: products > 0,                                   pts: earned.produtos },
+      { label: 'Posts existem',   ok: totalPosts > 0,                                 pts: earned.posts },
+      { label: 'Posts 2x/sem',    ok: recentPosts >= 4, warn: recentPosts >= 2,       pts: earned.postsFrequencia },
+      { label: 'Fotos existem',   ok: totalMedia > 0,                                 pts: earned.fotos },
+      { label: 'Fotos 2x/sem',    ok: recentMedia >= 4, warn: recentMedia >= 2,       pts: earned.fotosFrequencia },
+      { label: 'Avaliações',      ok: totalReviews > 0,                               pts: earned.avaliacoes },
+      { label: 'Avals 5+/sem',    ok: recentReviews >= 5, warn: recentReviews >= 2,   pts: earned.avaliacoesFreq },
+    ];
+
+    const checkHtml = checks.map(c => {
+      const cls = c.ok ? 'ok' : (c.warn ? 'warn' : 'bad');
+      const max = WEIGHTS[Object.keys(WEIGHTS)[checks.indexOf(c)]];
+      return `<div class="check-item ${cls}"><div class="check-dot"></div>${c.label} <span style="margin-left:auto;opacity:0.6">${c.pts}pts</span></div>`;
+    }).join('');
 
     return `
     <div class="client-card">
       <div class="client-card-header">
-        <div>
+        <div style="flex:1">
           <div class="client-name">${loc.title || 'Sem nome'}</div>
           <div class="client-category">${category}</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:6px">${address}</div>
+          <div class="client-address">${[address, city].filter(Boolean).join(', ')}</div>
         </div>
         <div class="score-badge ${sCls}">
-          ${score}
-          <span class="score-label">pts</span>
+          ${total}
+          <span class="score-label">/ 100</span>
         </div>
       </div>
       <div class="client-card-body">
+        <div class="score-bar-wrap">
+          <div class="score-bar-label"><span>Score GMN</span><span>${total} pts</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:${total}%;background:${barColor(total)}"></div></div>
+        </div>
+
         <div class="metrics-row">
           <div class="metric">
-            <div class="metric-value">—</div>
-            <div class="metric-label">⭐ Nota</div>
+            <div class="metric-value ${metricClass(parseFloat(avgRat)||0, 4.5, 4)}">${avgRat} ⭐</div>
+            <div class="metric-label">${totalReviews} avaliações</div>
           </div>
           <div class="metric">
-            <div class="metric-value">—</div>
-            <div class="metric-label">💬 Reviews</div>
+            <div class="metric-value ${metricClass(recentPosts, 4, 2)}">${recentPosts}</div>
+            <div class="metric-label">posts / 2 sem</div>
           </div>
           <div class="metric">
-            <div class="metric-value">—</div>
-            <div class="metric-label">📸 Fotos</div>
+            <div class="metric-value ${metricClass(recentMedia, 4, 2)}">${recentMedia}</div>
+            <div class="metric-label">fotos / 2 sem</div>
           </div>
         </div>
-        <div class="checklist">
-          ${renderChecklist(loc)}
-        </div>
+
+        <div class="section-divider">Checklist Beekeeper</div>
+        <div class="checklist-grid">${checkHtml}</div>
       </div>
       <div class="client-card-footer">
-        <span class="status-pill ${st.cls}">${st.label}</span>
-        <span class="last-updated">${phone}</span>
+        <span class="status-pill ${verified ? 'status-verified' : 'status-pending'}">${verified ? 'Verificado' : 'Pendente'}</span>
+        <span style="font-size:11px;color:var(--text-muted)">${phone}</span>
       </div>
     </div>`;
   }).join('');
@@ -750,7 +804,10 @@ function showError(msg) {
   document.getElementById('error-container').innerHTML = `<div class="error-banner">⚠️ ${msg}</div>`;
 }
 
-// ─── INIT ──────────────────────────────────────────────────────────────────
+function setLoading(msg) {
+  document.getElementById('loading-msg').textContent = msg;
+}
+
 initGoogleAuth();
 </script>
 </body>

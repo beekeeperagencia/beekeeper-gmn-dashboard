@@ -1,0 +1,1866 @@
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beekeeper — Fluxo de Caixa 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bee-yellow: #F5C518;
+  --bee-amber: #E8A100;
+  --bee-dark: #1A1A0F;
+  --bee-brown: #3D2B00;
+  --surface: #FAFAF7;
+  --surface2: #F3F2EC;
+  --surface3: #EBEAE0;
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.15);
+  --text: #1A1A0F;
+  --text2: #6B6855;
+  --text3: #9E9B87;
+  --green: #1A7A4A;
+  --green-bg: #E8F5EE;
+  --red: #C0392B;
+  --red-bg: #FDECEA;
+  --blue: #1A4F8A;
+  --blue-bg: #E8F0FA;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  background: var(--bee-dark);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 2px solid var(--bee-yellow);
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.bee-logo {
+  width: 32px; height: 32px;
+  background: var(--bee-yellow);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.topbar-name { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
+.topbar-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-left: 4px; }
+.topbar-right { display: flex; gap: 8px; align-items: center; }
+.btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  transition: all .15s;
+}
+.btn-ghost {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border: 0.5px solid rgba(255,255,255,0.2);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.18); }
+.btn-yellow { background: var(--bee-yellow); color: var(--bee-dark); font-weight: 600; }
+.btn-yellow:hover { background: #FFCF30; }
+.btn-danger { background: var(--red-bg); color: var(--red); border: 0.5px solid rgba(192,57,43,0.2); }
+.btn-danger:hover { background: #fbd5d2; }
+.btn-success { background: var(--green-bg); color: var(--green); border: 0.5px solid rgba(26,122,74,0.2); }
+.btn-success:hover { background: #c7ebd8; }
+
+/* ── LAYOUT ── */
+.container { max-width: 1280px; margin: 0 auto; padding: 2rem; }
+
+/* ── SECTION HEADER ── */
+.section-hd {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 1rem;
+}
+.section-hd::after {
+  content: '';
+  flex: 1;
+  height: 0.5px;
+  background: var(--border);
+  margin-left: 8px;
+}
+
+/* ── KPI CARDS ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2rem; }
+.kpi {
+  background: #fff;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.25rem 1rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: box-shadow .2s;
+}
+.kpi:hover { box-shadow: var(--shadow-md); }
+.kpi-accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.kpi-label { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+.kpi-value { font-size: 24px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 4px; font-family: 'DM Mono', monospace; }
+.kpi-meta { font-size: 11px; color: var(--text3); }
+.badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 11px; font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-red   { background: var(--red-bg);   color: var(--red); }
+.badge-blue  { background: var(--blue-bg);  color: var(--blue); }
+.badge-amber { background: #FFF3D0; color: #8A5A00; }
+.badge-gray  { background: var(--surface3); color: var(--text2); }
+
+/* ── CHARTS ── */
+.charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 2rem; }
+.chart-card {
+  background: #fff;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+.chart-title {
+  font-size: 13px; font-weight: 600; color: var(--text);
+  margin-bottom: 4px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.chart-sub { font-size: 11px; color: var(--text3); margin-bottom: 1rem; }
+.chart-legend {
+  display: flex; gap: 14px; font-size: 11px; color: var(--text2);
+  margin-bottom: 12px; flex-wrap: wrap;
+}
+.chart-legend span { display: flex; align-items: center; gap: 5px; }
+.dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── TABLE ── */
+.table-card {
+  background: #fff;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+.table-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 0.5px solid var(--border);
+  gap: 12px; flex-wrap: wrap;
+}
+.table-toolbar-left { display: flex; align-items: center; gap: 8px; }
+.toolbar-title { font-size: 13px; font-weight: 600; }
+.edit-hint-pill {
+  font-size: 11px; color: var(--text3);
+  background: var(--surface2);
+  border: 0.5px solid var(--border);
+  padding: 3px 10px; border-radius: 20px;
+}
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text3); padding: 10px 12px;
+  background: var(--surface2);
+  border-bottom: 0.5px solid var(--border);
+  text-align: right; white-space: nowrap;
+}
+thead th:first-child { text-align: left; position: sticky; left: 0; z-index:5; background: var(--surface2); min-width:160px; }
+thead th .tipo-tag {
+  display: block; font-size: 9px; font-weight: 500;
+  padding: 1px 5px; border-radius: 3px; margin-bottom: 2px;
+  text-transform: uppercase; letter-spacing: 0.3px;
+}
+.tipo-realizado { background: var(--green-bg); color: var(--green); }
+.tipo-previsto  { background: var(--blue-bg);  color: var(--blue); }
+
+tbody tr { border-bottom: 0.5px solid var(--border); }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover td { background: var(--surface2); }
+tbody tr.row-bold td { font-weight: 600; background: var(--surface2); }
+tbody tr.row-bold:hover td { background: var(--surface3); }
+tbody td {
+  font-size: 13px; padding: 10px 12px;
+  text-align: right;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  white-space: nowrap;
+}
+tbody td:first-child {
+  text-align: left;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  position: sticky; left: 0; z-index:2;
+  background: #fff;
+}
+tbody tr.row-bold td:first-child { background: var(--surface2); }
+td.pos { color: var(--green); }
+td.neg { color: var(--red); }
+td.zero { color: var(--text3); }
+
+.editable-cell {
+  display: inline-block;
+  min-width: 80px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  cursor: text;
+  transition: all .1s;
+}
+.editable-cell:hover {
+  background: #FFF8E0;
+  border-color: var(--bee-amber);
+}
+.editable-cell:focus {
+  outline: none;
+  background: #FFFAEB;
+  border-color: var(--bee-yellow);
+  box-shadow: 0 0 0 3px rgba(245,197,24,0.2);
+  color: var(--bee-brown);
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  width: 460px;
+  max-width: 95vw;
+  box-shadow: var(--shadow-md);
+  border: 0.5px solid var(--border);
+  animation: modalIn .2s ease;
+}
+@keyframes modalIn { from { transform: scale(.96); opacity:0; } to { transform: scale(1); opacity:1; } }
+.modal-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.modal-sub { font-size: 12px; color: var(--text3); margin-bottom: 1.25rem; }
+.form-group { margin-bottom: 1rem; }
+.form-label { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 4px; display: block; }
+.form-input {
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  padding: 8px 12px;
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  transition: all .15s;
+}
+.form-input:focus { outline: none; border-color: var(--bee-amber); box-shadow: 0 0 0 3px rgba(245,197,24,0.15); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.25rem; }
+.btn-primary {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  padding: 8px 18px;
+  border: none; border-radius: 6px; cursor: pointer;
+  background: var(--bee-yellow); color: var(--bee-dark);
+  transition: all .15s;
+}
+.btn-primary:hover { background: #FFCF30; }
+.btn-cancel {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 500;
+  padding: 8px 14px;
+  border: 0.5px solid var(--border-strong);
+  border-radius: 6px; cursor: pointer;
+  background: #fff; color: var(--text2);
+  transition: all .15s;
+}
+.btn-cancel:hover { background: var(--surface2); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999;
+  background: var(--bee-dark); color: #fff;
+  padding: 10px 18px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 500;
+  border-left: 3px solid var(--bee-yellow);
+  opacity: 0; transform: translateY(8px);
+  transition: all .25s; pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  font-size: 11px; color: var(--text3);
+  padding: 1.5rem 0 2rem;
+  border-top: 0.5px solid var(--border);
+}
+
+@media (max-width: 900px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .charts-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 540px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .container { padding: 1rem; }
+}
+</style>
+<script>
+  // DADOS SALVOS EM: 26/06/2026, 11:06:58
+  window.__SAVED_STATE__ = {
+  "saldoInicial": [
+    0,
+    0,
+    0,
+    5508.03,
+    10068.73,
+    16596.73,
+    23756.73,
+    30966.73,
+    30678.14,
+    30389.55,
+    30100.96,
+    29882.26
+  ],
+  "categorias": [
+    {
+      "nome": "Receita de Clientes",
+      "valores": [
+        0,
+        0,
+        6751,
+        5730,
+        8570,
+        11710,
+        8310,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "editavel": true,
+      "tipo": "entrada",
+      "itens": {
+        "0": [],
+        "1": [],
+        "2": [],
+        "3": [],
+        "4": [],
+        "5": [
+          {
+            "nome": "Marrom Motors",
+            "valor": 1000
+          },
+          {
+            "nome": "Gabriel Borges",
+            "valor": 500
+          },
+          {
+            "nome": "Hooper",
+            "valor": 700
+          },
+          {
+            "nome": "Alma Pilates",
+            "valor": 400
+          },
+          {
+            "nome": "Center Pet Feliz",
+            "valor": 700
+          },
+          {
+            "nome": "Fernando Pereira",
+            "valor": 500
+          },
+          {
+            "nome": "Qualité",
+            "valor": 1400
+          },
+          {
+            "nome": "Alma Clinic",
+            "valor": 1950
+          },
+          {
+            "nome": "Kings Barber",
+            "valor": 1160
+          },
+          {
+            "nome": "StoryMaker Fernando",
+            "valor": 400
+          },
+          {
+            "nome": "Site IGDM",
+            "valor": 3000
+          }
+        ],
+        "6": [
+          {
+            "nome": "Marrom Motors",
+            "valor": 1000
+          },
+          {
+            "nome": "Gabriel Borges",
+            "valor": 500
+          },
+          {
+            "nome": "Hooper",
+            "valor": 700
+          },
+          {
+            "nome": "Alma Pilates",
+            "valor": 400
+          },
+          {
+            "nome": "Center Pet Feliz",
+            "valor": 700
+          },
+          {
+            "nome": "Fernando Pereira",
+            "valor": 500
+          },
+          {
+            "nome": "Qualité",
+            "valor": 1400
+          },
+          {
+            "nome": "Alma Clinic",
+            "valor": 1950
+          },
+          {
+            "nome": "Kings Barber",
+            "valor": 1160
+          }
+        ],
+        "7": [],
+        "8": [],
+        "9": [],
+        "10": [],
+        "11": []
+      }
+    },
+    {
+      "nome": "Custos",
+      "valores": [
+        0,
+        0,
+        -1242.97,
+        -1169.3,
+        -2042,
+        -4550,
+        -1100,
+        -288.59,
+        -288.59,
+        -288.59,
+        -218.7,
+        -218.7
+      ],
+      "editavel": true,
+      "tipo": "saida",
+      "itens": {
+        "0": [],
+        "1": [],
+        "2": [],
+        "3": [],
+        "4": [],
+        "5": [
+          {
+            "nome": "Tráfego Alma Clinic - Wilson",
+            "valor": 500
+          },
+          {
+            "nome": "Tráfego Marrom Motors - Wilson",
+            "valor": 300
+          },
+          {
+            "nome": "Tráfego Kings Barber",
+            "valor": 300
+          },
+          {
+            "nome": "Editor de Vídeo - Breno",
+            "valor": 350
+          },
+          {
+            "nome": "Editor de Vídeo - Breno",
+            "valor": 350
+          },
+          {
+            "nome": "Site IGDM - Wilson",
+            "valor": 2750
+          }
+        ],
+        "6": [
+          {
+            "nome": "Tráfego Alma Clinic - Wilson",
+            "valor": 500
+          },
+          {
+            "nome": "Tráfego Marrom Motors - Wilson",
+            "valor": 300
+          },
+          {
+            "nome": "Tráfego Kings Barber",
+            "valor": 300
+          }
+        ],
+        "7": [],
+        "8": [],
+        "9": [],
+        "10": [],
+        "11": []
+      }
+    }
+  ],
+  "saldoOp": [
+    0,
+    0,
+    5508.03,
+    4560.7,
+    6528,
+    7160,
+    7210,
+    -288.59,
+    -288.59,
+    -288.59,
+    -218.7,
+    -218.7
+  ],
+  "saldoFinal": [
+    0,
+    0,
+    5508.03,
+    10068.73,
+    16596.73,
+    23756.73,
+    30966.73,
+    30678.14,
+    30389.55,
+    30100.96,
+    29882.26,
+    29663.559999999998
+  ]
+};
+  window.__SAVED_METAS__ = [0,0,6000,7000,8000,9000,10000,11000,12000,13000,14000,15000];
+  window.__SAVED_NOTES__ = "";
+  </script></head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="bee-logo">🐝</div>
+    <span class="topbar-name">Beekeeper</span>
+    <span class="topbar-sub">Agência de Marketing</span>
+    <span id="saveIndicator" style="font-size:11px;color:rgba(255,255,255,0.4);margin-left:8px;">✓ Salvo às 26/06/2026, 11:06:56</span>
+  </div>
+  <div class="topbar-right">
+    <button class="btn btn-ghost" onclick="openAddRow()">+ Nova Categoria</button>
+    <button class="btn btn-ghost" onclick="exportCSV()">Exportar CSV</button>
+    <button class="btn btn-ghost" onclick="exportHTML()" title="Baixa o arquivo HTML com todos os dados salvos">💾 Exportar HTML</button>
+    <button class="btn btn-ghost" onclick="printPage()">🖨 Imprimir</button>
+    <button class="btn btn-yellow" onclick="saveToLocal()" id="btnSalvar" style="">💾 Salvar</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- PERIOD LABEL -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:12px;">
+    <div>
+      <div style="font-size:22px;font-weight:600;letter-spacing:-0.5px;">Fluxo de Caixa 2026</div>
+      <div style="font-size:13px;color:var(--text3);margin-top:2px;" id="periodLabel">Janeiro a Dezembro · Realizado até Maio · Previsto de Junho em diante</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <label style="font-size:12px;font-weight:500;color:var(--text2);">Data de referência:</label>
+      <input type="date" id="refDateInput" onchange="setDateCutoff(this.value)" style="font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 10px;border:0.5px solid var(--border-strong);border-radius:6px;background:#fff;color:var(--text);cursor:pointer;">
+      <span class="badge badge-green" id="statusBadge">✓ Dados carregados</span>
+    </div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="section-hd">Resumo do Período</div>
+  <div class="kpi-grid" id="kpiGrid">
+    <!-- Card 1: Caixa acumulado realizado -->
+    <div class="kpi" style="border-left: 3px solid #E8A100;">
+      <div class="kpi-accent" style="background:#E8A100"></div>
+      <div class="kpi-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);">
+        💰 Caixa Acumulado — Maio (último mês fechado)
+      </div>
+      <div class="kpi-value" style="font-size:22px;">R$ 16.596,73</div>
+      <div style="margin-top:6px;font-size:11px;color:var(--text2);line-height:1.5;">
+        Soma de todos os saldos operacionais de Jan até Mai.<br>
+        <span class="badge badge-amber" style="margin-top:4px;display:inline-flex;">✓ Realizado</span>
+      </div>
+    </div>
+
+    <!-- Card 2: Projeção dezembro -->
+    <div class="kpi" style="border-left: 3px solid #1A7A4A;">
+      <div class="kpi-accent" style="background:#1A7A4A"></div>
+      <div class="kpi-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);">
+        📅 Caixa Projetado — Dezembro/2026
+      </div>
+      <div class="kpi-value" style="font-size:22px;">R$ 29.663,56</div>
+      <div style="margin-top:6px;font-size:11px;color:var(--text2);line-height:1.5;">
+        Estimativa acumulada até o fim do ano, incluindo meses previstos.<br>
+        <span class="badge badge-green" style="margin-top:4px;display:inline-flex;">▲ Positivo</span>
+      </div>
+    </div>
+
+    <!-- Card 3: Total entradas -->
+    <div class="kpi" style="border-left: 3px solid #1A7A4A;">
+      <div class="kpi-accent" style="background:#1A7A4A"></div>
+      <div class="kpi-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);">
+        ↑ Total de Entradas — Jan a Dez
+      </div>
+      <div class="kpi-value" style="font-size:22px;">R$ 41.071,00</div>
+      <div style="margin-top:6px;font-size:11px;color:var(--text2);line-height:1.5;">
+        Soma de todos os valores positivos do ano (realizados + previstos).<br>
+        <span class="badge badge-green" style="margin-top:4px;display:inline-flex;">Créditos</span>
+      </div>
+    </div>
+
+    <!-- Card 4: Total saídas -->
+    <div class="kpi" style="border-left: 3px solid #C0392B;">
+      <div class="kpi-accent" style="background:#C0392B"></div>
+      <div class="kpi-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);">
+        ↓ Total de Saídas — Jan a Dez
+      </div>
+      <div class="kpi-value" style="font-size:22px;">R$ 11.407,44</div>
+      <div style="margin-top:6px;font-size:11px;color:var(--text2);line-height:1.5;">
+        Soma de todos os valores negativos do ano (realizados + previstos).<br>
+        <span class="badge badge-red" style="margin-top:4px;display:inline-flex;">Débitos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="section-hd">Análise Visual</div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Evolução do Saldo Final
+        <span class="badge badge-gray" style="font-size:10px;">Jan–Dez</span>
+      </div>
+      <div class="chart-sub">Saldo acumulado mês a mês — realizado e previsto</div>
+      <div class="chart-legend">
+        <span><span class="dot" style="background:#1A7A4A"></span>Realizado</span>
+        <span><span class="dot" style="background:#1A4F8A;opacity:.5;border:1px dashed #1A4F8A"></span>Previsto</span>
+      </div>
+      <div style="position:relative;height:220px;">
+        <canvas id="lineChart" role="img" aria-label="Gráfico de linha do saldo final mensal de 2026" width="951" height="275" style="display: block; box-sizing: border-box; height: 220px; width: 761px;">Saldo final mensal de jan a dez/2026.</canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Saldo Operacional</div>
+      <div class="chart-sub">Resultado de cada mês (entradas − saídas)</div>
+      <div class="chart-legend">
+        <span><span class="dot" style="background:#1A7A4A"></span>Positivo</span>
+        <span><span class="dot" style="background:#C0392B"></span>Negativo</span>
+      </div>
+      <div style="position:relative;height:220px;">
+        <canvas id="barChart" role="img" aria-label="Gráfico de barras do saldo operacional mensal" width="449" height="275" style="display: block; box-sizing: border-box; height: 220px; width: 359px;">Saldo operacional mensal 2026.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- META MENSAL -->
+  <div class="section-hd">Meta Mensal de Receita</div>
+  <div style="background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);margin-bottom:1rem;">
+    <div style="font-size:12px;color:var(--text2);margin-bottom:1rem;">
+      Defina a meta de receita para cada mês. O dashboard mostra automaticamente se foi atingida. <span style="color:var(--text3);">✏️ Clique para editar</span>
+    </div>
+    <div id="metaGrid" style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:700px;"><thead><tr><th style="text-align:left;font-size:11px;color:var(--text3);font-weight:600;padding:6px 10px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;min-width:140px;">Indicador</th><th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:#E8F5EE;color:#0F6E56">Realizado</span>
+      Jan
+    </th><th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:#E8F5EE;color:#0F6E56">Realizado</span>
+      Fev
+    </th><th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:#E8F5EE;color:#0F6E56">Realizado</span>
+      Mar
+    </th><th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:#E8F5EE;color:#0F6E56">Realizado</span>
+      Abr
+    </th><th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:#E8F5EE;color:#0F6E56">Realizado</span>
+      Mai
+    </th><th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:#E8F0FA;color:#185FA5">Previsto</span>
+      Jun
+    </th><th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:#E8F0FA;color:#185FA5">Previsto</span>
+      Jul
+    </th><th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:#E8F0FA;color:#185FA5">Previsto</span>
+      Ago
+    </th><th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:#E8F0FA;color:#185FA5">Previsto</span>
+      Set
+    </th><th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:#E8F0FA;color:#185FA5">Previsto</span>
+      Out
+    </th><th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:#E8F0FA;color:#185FA5">Previsto</span>
+      Nov
+    </th><th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:#E8F0FA;color:#185FA5">Previsto</span>
+      Dez
+    </th></tr></thead><tbody><tr><td style="font-size:12px;font-weight:500;padding:8px 10px;border-bottom:0.5px solid var(--border);color:var(--text);">🎯 Meta de Receita</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="0" title="Clique para editar a meta" style="font-size:12px;font-family:'DM Mono',monospace;">—</span>
+    </td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="1" title="Clique para editar a meta" style="font-size:12px;font-family:'DM Mono',monospace;">—</span>
+    </td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="2" title="Clique para editar a meta" style="font-size:12px;font-family:'DM Mono',monospace;">R$ 6.000,00</span>
+    </td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="3" title="Clique para editar a meta" style="font-size:12px;font-family:'DM Mono',monospace;">R$ 7.000,00</span>
+    </td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="4" title="Clique para editar a meta" style="font-size:12px;font-family:'DM Mono',monospace;">R$ 8.000,00</span>
+    </td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="5" title="Clique para editar a meta" style="font-size:12px;font-family:'DM Mono',monospace;">R$ 9.000,00</span>
+    </td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="6" title="Clique para editar a meta" style="font-size:12px;font-family:'DM Mono',monospace;">R$ 10.000,00</span>
+    </td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="7" title="Clique para editar a meta" style="font-size:12px;font-family:'DM Mono',monospace;">R$ 11.000,00</span>
+    </td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="8" title="Clique para editar a meta" style="font-size:12px;font-family:'DM Mono',monospace;">R$ 12.000,00</span>
+    </td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="9" title="Clique para editar a meta" style="font-size:12px;font-family:'DM Mono',monospace;">R$ 13.000,00</span>
+    </td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="10" title="Clique para editar a meta" style="font-size:12px;font-family:'DM Mono',monospace;">R$ 14.000,00</span>
+    </td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="11" title="Clique para editar a meta" style="font-size:12px;font-family:'DM Mono',monospace;">R$ 15.000,00</span>
+    </td></tr><tr><td style="font-size:12px;padding:8px 10px;border-bottom:0.5px solid var(--border);color:var(--text2);">📥 Receita de Clientes</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--green);">R$ 6.751,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--green);">R$ 5.730,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--green);">R$ 8.570,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--green);">R$ 11.710,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--green);">R$ 8.310,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td></tr><tr><td style="font-size:12px;padding:8px 10px;color:var(--text2);">📊 Atingimento</td><td style="text-align:center;padding:8px 8px;font-size:11px;color:var(--text3);">sem meta</td><td style="text-align:center;padding:8px 8px;font-size:11px;color:var(--text3);">sem meta</td><td style="padding:8px 8px;">
+        <div style="font-size:14px;font-weight:700;color:#0A5C35;text-align:right;margin-bottom:3px;">113%</div>
+        <div style="background:var(--surface3);border-radius:4px;height:6px;overflow:hidden;position:relative;">
+          <div style="width:100%;height:100%;background:#0A5C35;border-radius:4px;transition:width .3s;"></div>
+          <div style="position:absolute;right:0;top:0;width:4px;height:100%;background:#0A5C35;border-radius:0 4px 4px 0;"></div>
+        </div>
+        <div style="font-size:10px;font-weight:600;text-align:right;margin-top:3px;background:#C6F0D8;color:#0A5C35;border-radius:3px;padding:2px 6px;display:inline-block;float:right;border:1px solid #0A5C35;">🚀 +R$ 751,00 acima</div>
+      </td><td style="padding:8px 8px;">
+        <div style="font-size:11px;font-weight:700;color:#E8A100;text-align:right;margin-bottom:3px;">82%</div>
+        <div style="background:var(--surface3);border-radius:4px;height:6px;overflow:hidden;position:relative;">
+          <div style="width:82%;height:100%;background:#E8A100;border-radius:4px;transition:width .3s;"></div>
+          
+        </div>
+        <div style="font-size:10px;font-weight:600;text-align:right;margin-top:3px;background:#FFF3D0;color:#E8A100;border-radius:3px;padding:2px 6px;display:inline-block;float:right;">falta R$ 1.270,00</div>
+      </td><td style="padding:8px 8px;">
+        <div style="font-size:14px;font-weight:700;color:#0A5C35;text-align:right;margin-bottom:3px;">107%</div>
+        <div style="background:var(--surface3);border-radius:4px;height:6px;overflow:hidden;position:relative;">
+          <div style="width:100%;height:100%;background:#0A5C35;border-radius:4px;transition:width .3s;"></div>
+          <div style="position:absolute;right:0;top:0;width:4px;height:100%;background:#0A5C35;border-radius:0 4px 4px 0;"></div>
+        </div>
+        <div style="font-size:10px;font-weight:600;text-align:right;margin-top:3px;background:#C6F0D8;color:#0A5C35;border-radius:3px;padding:2px 6px;display:inline-block;float:right;border:1px solid #0A5C35;">🚀 +R$ 570,00 acima</div>
+      </td><td style="padding:8px 8px;">
+        <div style="font-size:14px;font-weight:700;color:#0A5C35;text-align:right;margin-bottom:3px;">130%</div>
+        <div style="background:var(--surface3);border-radius:4px;height:6px;overflow:hidden;position:relative;">
+          <div style="width:100%;height:100%;background:#0A5C35;border-radius:4px;transition:width .3s;"></div>
+          <div style="position:absolute;right:0;top:0;width:4px;height:100%;background:#0A5C35;border-radius:0 4px 4px 0;"></div>
+        </div>
+        <div style="font-size:10px;font-weight:600;text-align:right;margin-top:3px;background:#C6F0D8;color:#0A5C35;border-radius:3px;padding:2px 6px;display:inline-block;float:right;border:1px solid #0A5C35;">🚀 +R$ 2.710,00 acima</div>
+      </td><td style="padding:8px 8px;">
+        <div style="font-size:11px;font-weight:700;color:#E8A100;text-align:right;margin-bottom:3px;">83%</div>
+        <div style="background:var(--surface3);border-radius:4px;height:6px;overflow:hidden;position:relative;">
+          <div style="width:83%;height:100%;background:#E8A100;border-radius:4px;transition:width .3s;"></div>
+          
+        </div>
+        <div style="font-size:10px;font-weight:600;text-align:right;margin-top:3px;background:#FFF3D0;color:#E8A100;border-radius:3px;padding:2px 6px;display:inline-block;float:right;">falta R$ 1.690,00</div>
+      </td><td style="padding:8px 8px;">
+        <div style="font-size:11px;font-weight:700;color:#C0392B;text-align:right;margin-bottom:3px;">0%</div>
+        <div style="background:var(--surface3);border-radius:4px;height:6px;overflow:hidden;position:relative;">
+          <div style="width:0%;height:100%;background:#C0392B;border-radius:4px;transition:width .3s;"></div>
+          
+        </div>
+        <div style="font-size:10px;font-weight:600;text-align:right;margin-top:3px;background:#FDECEA;color:#C0392B;border-radius:3px;padding:2px 6px;display:inline-block;float:right;">falta R$ 11.000,00</div>
+      </td><td style="padding:8px 8px;">
+        <div style="font-size:11px;font-weight:700;color:#C0392B;text-align:right;margin-bottom:3px;">0%</div>
+        <div style="background:var(--surface3);border-radius:4px;height:6px;overflow:hidden;position:relative;">
+          <div style="width:0%;height:100%;background:#C0392B;border-radius:4px;transition:width .3s;"></div>
+          
+        </div>
+        <div style="font-size:10px;font-weight:600;text-align:right;margin-top:3px;background:#FDECEA;color:#C0392B;border-radius:3px;padding:2px 6px;display:inline-block;float:right;">falta R$ 12.000,00</div>
+      </td><td style="padding:8px 8px;">
+        <div style="font-size:11px;font-weight:700;color:#C0392B;text-align:right;margin-bottom:3px;">0%</div>
+        <div style="background:var(--surface3);border-radius:4px;height:6px;overflow:hidden;position:relative;">
+          <div style="width:0%;height:100%;background:#C0392B;border-radius:4px;transition:width .3s;"></div>
+          
+        </div>
+        <div style="font-size:10px;font-weight:600;text-align:right;margin-top:3px;background:#FDECEA;color:#C0392B;border-radius:3px;padding:2px 6px;display:inline-block;float:right;">falta R$ 13.000,00</div>
+      </td><td style="padding:8px 8px;">
+        <div style="font-size:11px;font-weight:700;color:#C0392B;text-align:right;margin-bottom:3px;">0%</div>
+        <div style="background:var(--surface3);border-radius:4px;height:6px;overflow:hidden;position:relative;">
+          <div style="width:0%;height:100%;background:#C0392B;border-radius:4px;transition:width .3s;"></div>
+          
+        </div>
+        <div style="font-size:10px;font-weight:600;text-align:right;margin-top:3px;background:#FDECEA;color:#C0392B;border-radius:3px;padding:2px 6px;display:inline-block;float:right;">falta R$ 14.000,00</div>
+      </td><td style="padding:8px 8px;">
+        <div style="font-size:11px;font-weight:700;color:#C0392B;text-align:right;margin-bottom:3px;">0%</div>
+        <div style="background:var(--surface3);border-radius:4px;height:6px;overflow:hidden;position:relative;">
+          <div style="width:0%;height:100%;background:#C0392B;border-radius:4px;transition:width .3s;"></div>
+          
+        </div>
+        <div style="font-size:10px;font-weight:600;text-align:right;margin-top:3px;background:#FDECEA;color:#C0392B;border-radius:3px;padding:2px 6px;display:inline-block;float:right;">falta R$ 15.000,00</div>
+      </td></tr></tbody></table></div>
+  </div>
+
+  <!-- MARGEM -->
+  <div class="section-hd">% Margem por Mês</div>
+  <div style="background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);margin-bottom:1.5rem;">
+    <div style="font-size:12px;color:var(--text2);margin-bottom:1rem;">
+      Margem = Resultado do Mês ÷ Receita de Clientes. Mostra o quanto sobra de cada real recebido.
+    </div>
+    <div id="margemGrid" style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:700px;"><thead><tr><th style="text-align:left;font-size:11px;color:var(--text3);font-weight:600;padding:6px 10px;border-bottom:0.5px solid var(--border);text-transform:uppercase;min-width:140px;">Indicador</th><th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">Jan</th><th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">Fev</th><th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">Mar</th><th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">Abr</th><th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">Mai</th><th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">Jun</th><th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">Jul</th><th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">Ago</th><th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">Set</th><th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">Out</th><th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">Nov</th><th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">Dez</th></tr></thead><tbody><tr><td style="font-size:12px;padding:8px 10px;border-bottom:0.5px solid var(--border);color:var(--text2);">Resultado do Mês</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">R$ 0,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">R$ 0,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--green);">R$ 5.508,03</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--green);">R$ 4.560,70</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--green);">R$ 6.528,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--green);">R$ 7.160,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--green);">R$ 7.210,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--red);">−R$ 288,59</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--red);">−R$ 288,59</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--red);">−R$ 288,59</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--red);">−R$ 218,70</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--red);">−R$ 218,70</td></tr><tr><td style="font-size:12px;padding:8px 10px;border-bottom:0.5px solid var(--border);color:var(--text2);">Receita de Clientes</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">R$ 6.751,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">R$ 5.730,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">R$ 8.570,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">R$ 11.710,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">R$ 8.310,00</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">—</td></tr><tr style="background:var(--surface2);"><td style="font-size:12px;font-weight:600;padding:8px 10px;color:var(--text);">📈 Margem %</td><td style="text-align:center;padding:8px 8px;font-size:11px;color:var(--text3);">—</td><td style="text-align:center;padding:8px 8px;font-size:11px;color:var(--text3);">—</td><td style="text-align:right;padding:8px 8px;">
+        <span style="font-size:13px;font-weight:600;color:#1A7A4A;background:#E8F5EE;padding:2px 8px;border-radius:6px;">81.6%</span>
+      </td><td style="text-align:right;padding:8px 8px;">
+        <span style="font-size:13px;font-weight:600;color:#1A7A4A;background:#E8F5EE;padding:2px 8px;border-radius:6px;">79.6%</span>
+      </td><td style="text-align:right;padding:8px 8px;">
+        <span style="font-size:13px;font-weight:600;color:#1A7A4A;background:#E8F5EE;padding:2px 8px;border-radius:6px;">76.2%</span>
+      </td><td style="text-align:right;padding:8px 8px;">
+        <span style="font-size:13px;font-weight:600;color:#1A7A4A;background:#E8F5EE;padding:2px 8px;border-radius:6px;">61.1%</span>
+      </td><td style="text-align:right;padding:8px 8px;">
+        <span style="font-size:13px;font-weight:600;color:#1A7A4A;background:#E8F5EE;padding:2px 8px;border-radius:6px;">86.8%</span>
+      </td><td style="text-align:center;padding:8px 8px;font-size:11px;color:var(--text3);">—</td><td style="text-align:center;padding:8px 8px;font-size:11px;color:var(--text3);">—</td><td style="text-align:center;padding:8px 8px;font-size:11px;color:var(--text3);">—</td><td style="text-align:center;padding:8px 8px;font-size:11px;color:var(--text3);">—</td><td style="text-align:center;padding:8px 8px;font-size:11px;color:var(--text3);">—</td></tr></tbody></table></div>
+  </div>
+
+  <!-- FULL TABLE -->
+  <div class="section-hd">Detalhamento por Categoria</div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <div class="table-toolbar-left">
+        <span class="toolbar-title">Fluxo de Caixa Mensal</span>
+        <span class="edit-hint-pill">✏️ Clique nos valores amarelos para editar</span>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-danger" onclick="resetData()" style="font-size:11px;padding:5px 10px;">↺ Resetar</button>
+        <button class="btn btn-success" onclick="recalcAndRender()" style="font-size:11px;padding:5px 10px;">⟳ Recalcular</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="mainTable"><thead><tr><th style="text-align:left;">Categoria</th><th>
+      <span class="tipo-tag tipo-realizado">Realizado</span>
+      Jan
+    </th><th>
+      <span class="tipo-tag tipo-realizado">Realizado</span>
+      Fev
+    </th><th>
+      <span class="tipo-tag tipo-realizado">Realizado</span>
+      Mar
+    </th><th>
+      <span class="tipo-tag tipo-realizado">Realizado</span>
+      Abr
+    </th><th>
+      <span class="tipo-tag tipo-realizado">Realizado</span>
+      Mai
+    </th><th>
+      <span class="tipo-tag tipo-previsto">Previsto</span>
+      Jun
+    </th><th>
+      <span class="tipo-tag tipo-previsto">Previsto</span>
+      Jul
+    </th><th>
+      <span class="tipo-tag tipo-previsto">Previsto</span>
+      Ago
+    </th><th>
+      <span class="tipo-tag tipo-previsto">Previsto</span>
+      Set
+    </th><th>
+      <span class="tipo-tag tipo-previsto">Previsto</span>
+      Out
+    </th><th>
+      <span class="tipo-tag tipo-previsto">Previsto</span>
+      Nov
+    </th><th>
+      <span class="tipo-tag tipo-previsto">Previsto</span>
+      Dez
+    </th></tr></thead><tbody><tr class=""><td>
+        <span class="row-toggle" onclick="toggleExpand(0)">
+          <span class="row-toggle-arrow ">▶</span>Receita de Clientes
+        </span>
+      </td><td class="zero">
+          <span class="editable-cell" contenteditable="true" data-catidx="0" data-midx="0" title="Clique para editar">R$ 0,00</span>
+        </td><td class="zero">
+          <span class="editable-cell" contenteditable="true" data-catidx="0" data-midx="1" title="Clique para editar">R$ 0,00</span>
+        </td><td class="pos">
+          <span class="editable-cell" contenteditable="true" data-catidx="0" data-midx="2" title="Clique para editar">R$ 6.751,00</span>
+        </td><td class="pos">
+          <span class="editable-cell" contenteditable="true" data-catidx="0" data-midx="3" title="Clique para editar">R$ 5.730,00</span>
+        </td><td class="pos">
+          <span class="editable-cell" contenteditable="true" data-catidx="0" data-midx="4" title="Clique para editar">R$ 8.570,00</span>
+        </td><td class="pos">R$ 11.710,00<span class="auto-badge" title="Calculado pela soma do detalhamento">auto</span></td><td class="pos">R$ 8.310,00<span class="auto-badge" title="Calculado pela soma do detalhamento">auto</span></td><td class="zero">
+          <span class="editable-cell" contenteditable="true" data-catidx="0" data-midx="7" title="Clique para editar">R$ 0,00</span>
+        </td><td class="zero">
+          <span class="editable-cell" contenteditable="true" data-catidx="0" data-midx="8" title="Clique para editar">R$ 0,00</span>
+        </td><td class="zero">
+          <span class="editable-cell" contenteditable="true" data-catidx="0" data-midx="9" title="Clique para editar">R$ 0,00</span>
+        </td><td class="zero">
+          <span class="editable-cell" contenteditable="true" data-catidx="0" data-midx="10" title="Clique para editar">R$ 0,00</span>
+        </td><td class="zero">
+          <span class="editable-cell" contenteditable="true" data-catidx="0" data-midx="11" title="Clique para editar">R$ 0,00</span>
+        </td></tr><tr class=""><td>
+        <span class="row-toggle" onclick="toggleExpand(1)">
+          <span class="row-toggle-arrow ">▶</span>Custos
+        </span>
+      </td><td class="zero">
+          <span class="editable-cell" contenteditable="true" data-catidx="1" data-midx="0" title="Clique para editar">R$ 0,00</span>
+        </td><td class="zero">
+          <span class="editable-cell" contenteditable="true" data-catidx="1" data-midx="1" title="Clique para editar">R$ 0,00</span>
+        </td><td class="neg">
+          <span class="editable-cell" contenteditable="true" data-catidx="1" data-midx="2" title="Clique para editar">−R$ 1.242,97</span>
+        </td><td class="neg">
+          <span class="editable-cell" contenteditable="true" data-catidx="1" data-midx="3" title="Clique para editar">−R$ 1.169,30</span>
+        </td><td class="neg">
+          <span class="editable-cell" contenteditable="true" data-catidx="1" data-midx="4" title="Clique para editar">−R$ 2.042,00</span>
+        </td><td class="neg">−R$ 4.550,00<span class="auto-badge" title="Calculado pela soma do detalhamento">auto</span></td><td class="neg">−R$ 1.100,00<span class="auto-badge" title="Calculado pela soma do detalhamento">auto</span></td><td class="neg">
+          <span class="editable-cell" contenteditable="true" data-catidx="1" data-midx="7" title="Clique para editar">−R$ 288,59</span>
+        </td><td class="neg">
+          <span class="editable-cell" contenteditable="true" data-catidx="1" data-midx="8" title="Clique para editar">−R$ 288,59</span>
+        </td><td class="neg">
+          <span class="editable-cell" contenteditable="true" data-catidx="1" data-midx="9" title="Clique para editar">−R$ 288,59</span>
+        </td><td class="neg">
+          <span class="editable-cell" contenteditable="true" data-catidx="1" data-midx="10" title="Clique para editar">−R$ 218,70</span>
+        </td><td class="neg">
+          <span class="editable-cell" contenteditable="true" data-catidx="1" data-midx="11" title="Clique para editar">−R$ 218,70</span>
+        </td></tr><tr class="row-bold"><td>Resultado do Mês</td><td class="zero">R$ 0,00</td><td class="zero">R$ 0,00</td><td class="pos">R$ 5.508,03</td><td class="pos">R$ 4.560,70</td><td class="pos">R$ 6.528,00</td><td class="pos">R$ 7.160,00</td><td class="pos">R$ 7.210,00</td><td class="neg">−R$ 288,59</td><td class="neg">−R$ 288,59</td><td class="neg">−R$ 288,59</td><td class="neg">−R$ 218,70</td><td class="neg">−R$ 218,70</td></tr><tr class="row-bold"><td>Lucro Bruto Agência (acumulado)</td><td class="zero">R$ 0,00</td><td class="zero">R$ 0,00</td><td class="pos">R$ 5.508,03</td><td class="pos">R$ 10.068,73</td><td class="pos">R$ 16.596,73</td><td class="pos">R$ 23.756,73</td><td class="pos">R$ 30.966,73</td><td class="pos">R$ 30.678,14</td><td class="pos">R$ 30.389,55</td><td class="pos">R$ 30.100,96</td><td class="pos">R$ 29.882,26</td><td class="pos">R$ 29.663,56</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="section-hd">Observações</div>
+  <div style="background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);margin-bottom:2rem;">
+    <textarea id="notesArea" placeholder="Adicione observações, metas ou notas sobre o fluxo de caixa aqui..." style="width:100%;min-height:90px;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:transparent;resize:vertical;line-height:1.6;"></textarea>
+  </div>
+
+  <div class="footer">
+    Beekeeper Agência de Marketing · Fluxo de Caixa 2026 · Gerado com Claude
+  </div>
+</div>
+
+<!-- MODAL: Nova Categoria -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title">Nova Categoria</div>
+    <div class="modal-sub">Adicione uma nova linha ao fluxo de caixa</div>
+    <div class="form-group">
+      <label class="form-label">Nome da categoria</label>
+      <input class="form-input" id="newRowName" type="text" placeholder="Ex: Receita de Consultoria">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tipo</label>
+      <select class="form-input" id="newRowType">
+        <option value="entrada">Entrada (crédito)</option>
+        <option value="saida">Saída (débito)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label" style="margin-bottom:6px;">Valores mensais (R$)</label>
+      <div class="form-row" id="newRowValues"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-primary" onclick="confirmAddRow()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.row-toggle{cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:5px;}
+.row-toggle-arrow{font-size:10px;color:var(--text3);transition:transform .15s;display:inline-block;}
+.row-toggle-arrow.open{transform:rotate(90deg);}
+.detail-row{background:var(--surface);}
+.detail-row td{padding:5px 8px 5px 28px !important;font-size:11px;color:var(--text2);}
+.detail-row .editable-cell{color:var(--text2);}
+.detail-input{font-family:"DM Sans",sans-serif;font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--text);width:100%;box-sizing:border-box;}
+.detail-input:focus{outline:none;border-color:var(--amber, #E8A100);box-shadow:0 0 0 2px rgba(245,197,24,0.18);}
+.detail-input-nome{font-weight:500;}
+.detail-input-valor{font-family:"DM Mono",monospace;text-align:right;}
+.detail-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:0 4px;opacity:0;transition:opacity .12s;}
+.detail-row:hover .detail-del{opacity:1;}
+.detail-del:hover{color:var(--red);}
+.add-detail-row td{padding:5px 8px 8px 28px !important;}
+.add-detail-btn{font-size:11px;color:var(--text3);background:none;border:1px dashed var(--border);border-radius:6px;padding:3px 10px;cursor:pointer;transition:all .12s;margin-left:4px;}
+.copy-detail-btn{border-style:solid;border-color:rgba(245,197,24,0.3);color:var(--amber, #E8A100);}
+.copy-detail-btn:hover{background:rgba(245,197,24,0.1);border-color:var(--amber, #E8A100);}
+.add-detail-btn:hover{border-color:var(--amber, #E8A100);color:var(--amber, #E8A100);}
+.auto-badge{font-size:9px;font-weight:600;padding:1px 6px;border-radius:10px;background:rgba(245,197,24,0.15);color:var(--amber, #E8A100);margin-left:6px;}
+</style>
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Dados salvos no navegador!</div>
+
+<script>
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const MESES_SHORT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+let cutoff = 3; // index do último mês realizado (0=Jan)
+function getTipos() { return MESES.map((_,i) => i <= cutoff ? 'Realizado' : 'Previsto'); }
+
+const DEFAULT_DATA = {
+  saldoInicial: [0,0,0,5508.03,10068.73,16816.06,24673.29,24110.52,23821.93,23533.34,23244.75,23026.05],
+  categorias: [
+    { nome:'Receita de Clientes', valores:[0,0,6751,5730,8500,9730,0,0,0,0,0,0], editavel:true, tipo:'entrada',
+      // itens[mesIdx] = array de {nome, valor} — quando existe, o valor do mês é a SOMA destes itens
+      itens: {} },
+    { nome:'Custos', valores:[0,0,-1242.97,-1169.30,-1752.67,-1872.77,-562.77,-288.59,-288.59,-288.59,-218.7,-218.7], editavel:true, tipo:'saida',
+      itens: {} },
+  ],
+  saldoOp: [0,0,5508.03,4560.7,6747.33,7857.23,-562.77,-288.59,-288.59,-288.59,-218.7,-218.7],
+  saldoFinal: [0,0,5508.03,10068.73,16816.06,24673.29,24110.52,23821.93,23533.34,23244.75,23026.05,22807.35],
+};
+
+let state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+let metas = [0,0,7000,6000,9000,10000,0,0,0,0,0,0]; // metas mensais de receita editáveis
+
+function recalc() {
+  for (let i = 0; i < 12; i++) {
+    let op = 0;
+    state.categorias.forEach(c => { op += c.valores[i]; });
+    state.saldoOp[i] = op;
+    if (i === 0) {
+      state.saldoFinal[0] = state.saldoInicial[0] + op;
+    } else {
+      state.saldoInicial[i] = state.saldoFinal[i-1];
+      state.saldoFinal[i] = state.saldoInicial[i] + op;
+    }
+  }
+}
+
+function fmt(v) {
+  const abs = Math.abs(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return (v < 0 ? '−' : '') + 'R$ ' + abs;
+}
+
+function colorClass(v) {
+  if (v > 0) return 'pos';
+  if (v < 0) return 'neg';
+  return 'zero';
+}
+
+// ── KPI ──
+function renderKPIs() {
+  const sf = state.saldoFinal;
+  const ultimoReal = sf[cutoff];
+  const ultimoPrev = sf[11]; // Dezembro
+  const totalEntradas = state.categorias.flatMap(c=>c.valores).filter(v=>v>0).reduce((a,b)=>a+b,0);
+  const totalSaidas   = Math.abs(state.categorias.flatMap(c=>c.valores).filter(v=>v<0).reduce((a,b)=>a+b,0));
+  const melhorMes = sf.indexOf(Math.max(...sf));
+  const piorOp = state.saldoOp.indexOf(Math.min(...state.saldoOp));
+
+  // Variação mês a mês no saldo operacional dos meses realizados
+  const varReal = cutoff > 0 ? state.saldoOp[cutoff] - state.saldoOp[cutoff-1] : 0;
+  const varSinal = varReal >= 0 ? '+' : '';
+
+  document.getElementById('kpiGrid').innerHTML = `
+    <!-- Card 1: Caixa acumulado realizado -->
+    <div class="kpi" style="border-left: 3px solid #E8A100;">
+      <div class="kpi-accent" style="background:#E8A100"></div>
+      <div class="kpi-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);">
+        💰 Caixa Acumulado — ${MESES[cutoff]} (último mês fechado)
+      </div>
+      <div class="kpi-value" style="font-size:22px;">${fmt(ultimoReal)}</div>
+      <div style="margin-top:6px;font-size:11px;color:var(--text2);line-height:1.5;">
+        Soma de todos os saldos operacionais de Jan até ${MESES_SHORT[cutoff]}.<br>
+        <span class="badge badge-amber" style="margin-top:4px;display:inline-flex;">✓ Realizado</span>
+      </div>
+    </div>
+
+    <!-- Card 2: Projeção dezembro -->
+    <div class="kpi" style="border-left: 3px solid #1A7A4A;">
+      <div class="kpi-accent" style="background:#1A7A4A"></div>
+      <div class="kpi-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);">
+        📅 Caixa Projetado — Dezembro/2026
+      </div>
+      <div class="kpi-value" style="font-size:22px;">${fmt(ultimoPrev)}</div>
+      <div style="margin-top:6px;font-size:11px;color:var(--text2);line-height:1.5;">
+        Estimativa acumulada até o fim do ano, incluindo meses previstos.<br>
+        <span class="badge ${ultimoPrev >= 0 ? 'badge-green' : 'badge-red'}" style="margin-top:4px;display:inline-flex;">${ultimoPrev >= 0 ? '▲ Positivo' : '▼ Negativo'}</span>
+      </div>
+    </div>
+
+    <!-- Card 3: Total entradas -->
+    <div class="kpi" style="border-left: 3px solid #1A7A4A;">
+      <div class="kpi-accent" style="background:#1A7A4A"></div>
+      <div class="kpi-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);">
+        ↑ Total de Entradas — Jan a Dez
+      </div>
+      <div class="kpi-value" style="font-size:22px;">${fmt(totalEntradas)}</div>
+      <div style="margin-top:6px;font-size:11px;color:var(--text2);line-height:1.5;">
+        Soma de todos os valores positivos do ano (realizados + previstos).<br>
+        <span class="badge badge-green" style="margin-top:4px;display:inline-flex;">Créditos</span>
+      </div>
+    </div>
+
+    <!-- Card 4: Total saídas -->
+    <div class="kpi" style="border-left: 3px solid #C0392B;">
+      <div class="kpi-accent" style="background:#C0392B"></div>
+      <div class="kpi-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);">
+        ↓ Total de Saídas — Jan a Dez
+      </div>
+      <div class="kpi-value" style="font-size:22px;">${fmt(totalSaidas)}</div>
+      <div style="margin-top:6px;font-size:11px;color:var(--text2);line-height:1.5;">
+        Soma de todos os valores negativos do ano (realizados + previstos).<br>
+        <span class="badge badge-red" style="margin-top:4px;display:inline-flex;">Débitos</span>
+      </div>
+    </div>
+  `;
+}
+
+// ── CHARTS ──
+let lineChartInst, barChartInst;
+
+function renderCharts() {
+  if (lineChartInst) lineChartInst.destroy();
+  if (barChartInst)  barChartInst.destroy();
+
+  // Line chart
+  lineChartInst = new Chart(document.getElementById('lineChart'), {
+    type: 'line',
+    data: {
+      labels: MESES_SHORT,
+      datasets: [
+        {
+          label: 'Realizado',
+          data: state.saldoFinal.map((v,i) => i <= cutoff ? v : null),
+          borderColor: '#1A7A4A',
+          backgroundColor: 'rgba(26,122,74,0.08)',
+          borderWidth: 2,
+          pointRadius: 4,
+          pointBackgroundColor: '#1A7A4A',
+          tension: 0.3,
+          fill: true,
+        },
+        {
+          label: 'Previsto',
+          data: state.saldoFinal.map((v,i) => i >= cutoff ? v : null),
+          borderColor: '#1A4F8A',
+          backgroundColor: 'rgba(26,79,138,0.05)',
+          borderWidth: 2,
+          borderDash: [6,3],
+          pointRadius: 4,
+          pointBackgroundColor: '#1A4F8A',
+          tension: 0.3,
+          fill: true,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => fmt(ctx.raw || 0)
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 }, color: '#9E9B87' } },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: {
+            font: { size: 11 }, color: '#9E9B87',
+            callback: v => 'R$' + (v/1000).toFixed(0) + 'k'
+          }
+        }
+      }
+    }
+  });
+
+  // Bar chart operacional
+  const opColors = state.saldoOp.map(v => v >= 0 ? '#1A7A4A' : '#C0392B');
+  barChartInst = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: MESES_SHORT,
+      datasets: [{
+        label: 'Saldo Operacional',
+        data: state.saldoOp,
+        backgroundColor: opColors,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => fmt(ctx.raw) } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#9E9B87' } },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: {
+            font: { size: 11 }, color: '#9E9B87',
+            callback: v => (v < 0 ? '−' : '') + 'R$' + Math.abs(v/1000).toFixed(0) + 'k'
+          }
+        }
+      }
+    }
+  });
+}
+
+// ── TABLE ──
+// Quais categorias estão expandidas (mostrando detalhamento) — por índice de categoria
+let expandedCats = {};
+
+function getItens(catIdx, mesIdx) {
+  const cat = state.categorias[catIdx];
+  if (!cat.itens) cat.itens = {};
+  if (!cat.itens[mesIdx]) cat.itens[mesIdx] = [];
+  return cat.itens[mesIdx];
+}
+
+function hasDetalhamento(catIdx, mesIdx) {
+  const cat = state.categorias[catIdx];
+  return cat.itens && cat.itens[mesIdx] && cat.itens[mesIdx].length > 0;
+}
+
+function somaItens(catIdx, mesIdx) {
+  const itens = getItens(catIdx, mesIdx);
+  const soma = itens.reduce((a, it) => a + Math.abs(it.valor), 0);
+  // aplica o sinal da categoria (entrada = positivo, saida = negativo)
+  const cat = state.categorias[catIdx];
+  return cat.tipo === 'saida' ? -soma : soma;
+}
+
+// Sincroniza valores[] com a soma dos itens, para todos os meses detalhados
+function syncValoresComItens() {
+  state.categorias.forEach((cat, ci) => {
+    if (!cat.itens) return;
+    Object.keys(cat.itens).forEach(mesIdxStr => {
+      const mesIdx = +mesIdxStr;
+      if (cat.itens[mesIdx] && cat.itens[mesIdx].length > 0) {
+        cat.valores[mesIdx] = somaItens(ci, mesIdx);
+      }
+    });
+  });
+}
+
+function toggleExpand(catIdx) {
+  expandedCats[catIdx] = !expandedCats[catIdx];
+  renderTable();
+}
+
+function addItem(catIdx, mesIdx) {
+  const cat = state.categorias[catIdx];
+  const isEntrada = cat.tipo === 'entrada';
+  const nome = isEntrada ? 'Novo cliente' : 'Novo custo';
+  getItens(catIdx, mesIdx).push({ nome, valor: 0 });
+  syncValoresComItens();
+  recalcAndRender();
+}
+
+function delItem(catIdx, mesIdx, itemIdx) {
+  getItens(catIdx, mesIdx).splice(itemIdx, 1);
+  syncValoresComItens();
+  recalcAndRender();
+}
+
+function copiarItensMesAnterior(catIdx, mesIdx) {
+  if (mesIdx === 0) { showToast('Janeiro não tem mês anterior.'); return; }
+  const anteriores = getItens(catIdx, mesIdx - 1);
+  if (anteriores.length === 0) { showToast('O mês anterior não tem itens para copiar.'); return; }
+  const atual = getItens(catIdx, mesIdx);
+  // Anexa uma cópia dos itens do mês anterior aos que já existem no mês atual
+  // (não substitui, então o usuário pode ajustar antes de remover algo se quiser)
+  anteriores.forEach(it => atual.push({ nome: it.nome, valor: it.valor }));
+  syncValoresComItens();
+  recalcAndRender();
+  showToast('✓ ' + anteriores.length + ' item(ns) copiado(s) de ' + MESES_SHORT[mesIdx-1] + '!');
+}
+
+function renderTable() {
+  syncValoresComItens();
+
+  const rows = [
+    ...state.categorias.map((c, ci) => ({ key: 'cat_' + ci, label: c.nome, bold: false, editavel: c.editavel, data: c.valores, catIdx: ci })),
+    { key: 'saldoOp',    label: 'Resultado do Mês', bold: true, editavel: false, data: state.saldoOp },
+    { key: 'saldoFinal', label: 'Lucro Bruto Agência (acumulado)', bold: true, editavel: false, data: state.saldoFinal },
+  ];
+
+  let html = '<thead><tr>';
+  html += '<th style="text-align:left;">Categoria</th>';
+  MESES_SHORT.forEach((m, i) => {
+    html += `<th>
+      <span class="tipo-tag ${getTipos()[i] === 'Realizado' ? 'tipo-realizado' : 'tipo-previsto'}">${getTipos()[i]}</span>
+      ${m}
+    </th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  rows.forEach(row => {
+    const isCategoria = row.catIdx !== undefined;
+    const isExpanded = isCategoria && expandedCats[row.catIdx];
+
+    html += `<tr class="${row.bold ? 'row-bold' : ''}">`;
+    if (isCategoria) {
+      html += `<td>
+        <span class="row-toggle" onclick="toggleExpand(${row.catIdx})">
+          <span class="row-toggle-arrow ${isExpanded ? 'open' : ''}">▶</span>${row.label}
+        </span>
+      </td>`;
+    } else {
+      html += `<td>${row.label}</td>`;
+    }
+
+    row.data.forEach((v, i) => {
+      const cc = colorClass(v);
+      const detalhado = isCategoria && hasDetalhamento(row.catIdx, i);
+      if (row.editavel && !detalhado) {
+        html += `<td class="${cc}">
+          <span class="editable-cell" contenteditable="true"
+            data-catidx="${row.catIdx}" data-midx="${i}"
+            title="Clique para editar">${fmt(v)}</span>
+        </td>`;
+      } else if (row.editavel && detalhado) {
+        html += `<td class="${cc}">${fmt(v)}<span class="auto-badge" title="Calculado pela soma do detalhamento">auto</span></td>`;
+      } else {
+        html += `<td class="${cc}">${fmt(v)}</td>`;
+      }
+    });
+    html += '</tr>';
+
+    // ── DETAIL ROWS (expansão) ──
+    if (isExpanded) {
+      // Descobre a união de todos os meses que têm itens, para mostrar uma linha por item-slot
+      // Estratégia simples: uma linha de detalhamento por mês que tiver itens, mostrando nome+valor editável,
+      // alinhada na coluna daquele mês. Para manter a tabela simples, vamos gerar UMA linha de "itens" por
+      // posição (maxItens) cobrindo todos os meses, igual a uma mini-tabela dentro da categoria.
+
+      const cat = state.categorias[row.catIdx];
+      const maxItens = Math.max(0, ...MESES_SHORT.map((_, mi) => getItens(row.catIdx, mi).length));
+
+      for (let itemRow = 0; itemRow < maxItens; itemRow++) {
+        html += `<tr class="detail-row">`;
+        // nome do item — usamos o nome do primeiro mês que tiver esse índice como label de referência,
+        // mas cada mês edita seu próprio nome/valor independentemente
+        html += `<td style="white-space:nowrap;">↳ item ${itemRow+1}</td>`;
+        MESES_SHORT.forEach((_, mi) => {
+          const itens = getItens(row.catIdx, mi);
+          const it = itens[itemRow];
+          if (it) {
+            html += `<td style="min-width:170px;">
+              <div style="display:flex;flex-direction:column;gap:3px;">
+                <input type="text" class="detail-input detail-input-nome"
+                  data-catidx="${row.catIdx}" data-midx="${mi}" data-itemidx="${itemRow}" data-field="nome"
+                  value="${it.nome.replace(/"/g,'&quot;')}" placeholder="Nome do cliente/custo">
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <input type="text" class="detail-input detail-input-valor"
+                    data-catidx="${row.catIdx}" data-midx="${mi}" data-itemidx="${itemRow}" data-field="valor"
+                    value="${it.valor.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}" placeholder="0,00">
+                  <button class="detail-del" onclick="delItem(${row.catIdx},${mi},${itemRow})" title="Remover item">✕</button>
+                </div>
+              </div>
+            </td>`;
+          } else {
+            html += `<td></td>`;
+          }
+        });
+        html += `</tr>`;
+      }
+
+      // Linha de "+ adicionar item" por mês (+ botão de copiar do mês anterior)
+      html += `<tr class="add-detail-row">`;
+      html += `<td></td>`;
+      MESES_SHORT.forEach((_, mi) => {
+        const temAnterior = mi > 0 && getItens(row.catIdx, mi - 1).length > 0;
+        html += `<td style="text-align:right;white-space:nowrap;">
+          <button class="add-detail-btn" onclick="addItem(${row.catIdx},${mi})" title="Adicionar item manualmente">+ item</button>
+          ${temAnterior ? `<button class="add-detail-btn copy-detail-btn" onclick="copiarItensMesAnterior(${row.catIdx},${mi})" title="Copiar itens de ${MESES_SHORT[mi-1]}">⟲ copiar</button>` : ''}
+        </td>`;
+      });
+      html += `</tr>`;
+    }
+  });
+
+  html += '</tbody>';
+  document.getElementById('mainTable').innerHTML = html;
+
+  // bind editable cells (categoria total — só quando não detalhado)
+  document.querySelectorAll('.editable-cell').forEach(el => {
+    el.addEventListener('focus', function () {
+      const v = state.categorias[+this.dataset.catidx].valores[+this.dataset.midx];
+      this.innerText = v;
+      document.execCommand('selectAll', false, null);
+    });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); this.blur(); }
+      if (e.key === 'Escape') { this.blur(); recalcAndRender(); }
+      if (!/[0-9\.,\-]/.test(e.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key)) {
+        e.preventDefault();
+      }
+    });
+    el.addEventListener('blur', function () {
+      let raw = parseFloat(this.innerText.replace(',', '.').replace(/[^0-9.\-]/g, ''));
+      if (!isNaN(raw)) {
+        state.categorias[+this.dataset.catidx].valores[+this.dataset.midx] = raw;
+        recalcAndRender();
+        showToast('Valor atualizado com sucesso');
+      } else {
+        recalcAndRender();
+      }
+    });
+  });
+
+  // bind detail item fields (nome / valor) — usando <input> reais, sem o bug
+  // de "selecionar a página inteira" que ocorre com execCommand em contenteditable.
+  document.querySelectorAll('.detail-input-nome').forEach(el => {
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); this.blur(); }
+    });
+    el.addEventListener('blur', function () {
+      const ci = +this.dataset.catidx, mi = +this.dataset.midx, ii = +this.dataset.itemidx;
+      const itens = getItens(ci, mi);
+      const v = this.value.trim();
+      if (itens[ii] && v) {
+        itens[ii].nome = v;
+        autoSaveSilent();
+      } else {
+        renderTable();
+      }
+    });
+  });
+
+  document.querySelectorAll('.detail-input-valor').forEach(el => {
+    el.addEventListener('focus', function () {
+      this.select(); // seleciona só o conteúdo deste input, nunca a página
+    });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); this.blur(); }
+    });
+    el.addEventListener('blur', function () {
+      const ci = +this.dataset.catidx, mi = +this.dataset.midx, ii = +this.dataset.itemidx;
+      let raw = parseFloat(this.value.replace(/\./g,'').replace(',', '.').replace(/[^0-9.\-]/g, ''));
+      const itens = getItens(ci, mi);
+      if (itens[ii]) {
+        itens[ii].valor = isNaN(raw) ? 0 : Math.abs(raw);
+        syncValoresComItens();
+        recalcAndRender();
+      }
+    });
+  });
+}
+
+// ── META MENSAL ──
+function renderMeta() {
+  const receitas = state.categorias.find(c => c.nome === 'Receita de Clientes');
+  let html = '<table style="width:100%;border-collapse:collapse;min-width:700px;">';
+  html += '<thead><tr>';
+  html += '<th style="text-align:left;font-size:11px;color:var(--text3);font-weight:600;padding:6px 10px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;min-width:140px;">Indicador</th>';
+  MESES_SHORT.forEach((m,i) => {
+    html += `<th style="text-align:right;font-size:10px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;">
+      <span style="display:block;font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:${getTipos()[i]==='Realizado'?'#E8F5EE':'#E8F0FA'};color:${getTipos()[i]==='Realizado'?'#0F6E56':'#185FA5'}">${getTipos()[i]}</span>
+      ${m}
+    </th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  // Linha meta editável
+  html += '<tr><td style="font-size:12px;font-weight:500;padding:8px 10px;border-bottom:0.5px solid var(--border);color:var(--text);">🎯 Meta de Receita</td>';
+  metas.forEach((m,i) => {
+    html += `<td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);">
+      <span class="editable-cell" contenteditable="true" data-meta="${i}" title="Clique para editar a meta"
+        style="font-size:12px;font-family:'DM Mono',monospace;">${m > 0 ? fmt(m) : '—'}</span>
+    </td>`;
+  });
+  html += '</tr>';
+
+  // Linha receita realizada/prevista
+  html += '<tr><td style="font-size:12px;padding:8px 10px;border-bottom:0.5px solid var(--border);color:var(--text2);">📥 Receita de Clientes</td>';
+  (receitas ? receitas.valores : Array(12).fill(0)).forEach((v,i) => {
+    html += `<td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:${v>0?'var(--green)':'var(--text3)'};">${v > 0 ? fmt(v) : '—'}</td>`;
+  });
+  html += '</tr>';
+
+  // Linha barra de progresso
+  html += '<tr><td style="font-size:12px;padding:8px 10px;color:var(--text2);">📊 Atingimento</td>';
+  (receitas ? receitas.valores : Array(12).fill(0)).forEach((v,i) => {
+    const meta = metas[i];
+    if (!meta || meta === 0) {
+      html += `<td style="text-align:center;padding:8px 8px;font-size:11px;color:var(--text3);">sem meta</td>`;
+    } else {
+      const pct = Math.round((v / meta) * 100);
+      const barPct = Math.min(100, pct);
+      const superado = pct > 100;
+      const cor = superado ? '#0A5C35' : pct >= 100 ? '#1A7A4A' : pct >= 70 ? '#E8A100' : '#C0392B';
+      const bg  = superado ? '#C6F0D8' : pct >= 100 ? '#E8F5EE' : pct >= 70 ? '#FFF3D0' : '#FDECEA';
+      const extra = superado ? fmt(v - meta) : '';
+      const label = superado
+        ? `🚀 +${extra} acima`
+        : pct >= 100
+          ? '✓ Meta batida'
+          : `falta ${fmt(meta - v)}`;
+      const marcador = superado ? `<div style="position:absolute;right:0;top:0;width:4px;height:100%;background:#0A5C35;border-radius:0 4px 4px 0;"></div>` : '';
+      const borda = superado ? `border:1px solid ${cor};` : '';
+      const tamanho = superado ? '14px' : '11px';
+      html += `<td style="padding:8px 8px;">
+        <div style="font-size:${tamanho};font-weight:700;color:${cor};text-align:right;margin-bottom:3px;">${pct}%</div>
+        <div style="background:var(--surface3);border-radius:4px;height:6px;overflow:hidden;position:relative;">
+          <div style="width:${barPct}%;height:100%;background:${cor};border-radius:4px;transition:width .3s;"></div>
+          ${marcador}
+        </div>
+        <div style="font-size:10px;font-weight:600;text-align:right;margin-top:3px;background:${bg};color:${cor};border-radius:3px;padding:2px 6px;display:inline-block;float:right;${borda}">${label}</div>
+      </td>`;
+    }
+  });
+  html += '</tr>';
+  html += '</tbody></table>';
+
+  document.getElementById('metaGrid').innerHTML = html;
+
+  // bind meta editable cells
+  document.querySelectorAll('[data-meta]').forEach(el => {
+    el.addEventListener('focus', function() {
+      this.innerText = metas[+this.dataset.meta] || 0;
+      document.execCommand('selectAll', false, null);
+    });
+    el.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); this.blur(); }
+      if (e.key === 'Escape') { this.blur(); renderMeta(); }
+      if (!/[0-9\.,]/.test(e.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key)) e.preventDefault();
+    });
+    el.addEventListener('blur', function() {
+      const raw = parseFloat(this.innerText.replace(',','.').replace(/[^0-9.]/g,''));
+      if (!isNaN(raw)) {
+        metas[+this.dataset.meta] = raw;
+        showToast('Meta de ' + MESES[+this.dataset.meta] + ' atualizada');
+      }
+      renderMeta();
+    });
+  });
+}
+
+// ── MARGEM ──
+function renderMargem() {
+  const receitas = state.categorias.find(c => c.nome === 'Receita de Clientes');
+  let html = '<table style="width:100%;border-collapse:collapse;min-width:700px;">';
+  html += '<thead><tr>';
+  html += '<th style="text-align:left;font-size:11px;color:var(--text3);font-weight:600;padding:6px 10px;border-bottom:0.5px solid var(--border);text-transform:uppercase;min-width:140px;">Indicador</th>';
+  MESES_SHORT.forEach(m => {
+    html += `<th style="text-align:right;font-size:11px;color:var(--text3);font-weight:600;padding:6px 8px;border-bottom:0.5px solid var(--border);">${m}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  // Resultado do mês
+  html += '<tr><td style="font-size:12px;padding:8px 10px;border-bottom:0.5px solid var(--border);color:var(--text2);">Resultado do Mês</td>';
+  state.saldoOp.forEach(v => {
+    html += `<td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:${v>0?'var(--green)':v<0?'var(--red)':'var(--text3)'};">${fmt(v)}</td>`;
+  });
+  html += '</tr>';
+
+  // Receita
+  html += '<tr><td style="font-size:12px;padding:8px 10px;border-bottom:0.5px solid var(--border);color:var(--text2);">Receita de Clientes</td>';
+  (receitas ? receitas.valores : Array(12).fill(0)).forEach(v => {
+    html += `<td style="text-align:right;padding:8px 8px;border-bottom:0.5px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);">${v > 0 ? fmt(v) : '—'}</td>`;
+  });
+  html += '</tr>';
+
+  // Margem %
+  html += '<tr style="background:var(--surface2);"><td style="font-size:12px;font-weight:600;padding:8px 10px;color:var(--text);">📈 Margem %</td>';
+  state.saldoOp.forEach((op, i) => {
+    const rec = receitas ? receitas.valores[i] : 0;
+    if (!rec || rec === 0) {
+      html += `<td style="text-align:center;padding:8px 8px;font-size:11px;color:var(--text3);">—</td>`;
+    } else {
+      const pct = (op / rec * 100).toFixed(1);
+      const cor = pct >= 50 ? '#1A7A4A' : pct >= 20 ? '#E8A100' : '#C0392B';
+      const bg  = pct >= 50 ? '#E8F5EE' : pct >= 20 ? '#FFF3D0' : '#FDECEA';
+      html += `<td style="text-align:right;padding:8px 8px;">
+        <span style="font-size:13px;font-weight:600;color:${cor};background:${bg};padding:2px 8px;border-radius:6px;">${pct}%</span>
+      </td>`;
+    }
+  });
+  html += '</tr>';
+  html += '</tbody></table>';
+
+  document.getElementById('margemGrid').innerHTML = html;
+}
+
+function recalcAndRender(skipAutoSave) {
+  syncValoresComItens();
+  recalc();
+  renderKPIs();
+  try { renderCharts(); } catch(e) { console.warn('Gráficos indisponíveis:', e.message); }
+  renderMeta();
+  renderMargem();
+  renderTable();
+  if (!skipAutoSave) autoSave();
+}
+
+// ── RESET ──
+function resetData() {
+  if (!confirm('Deseja resetar todos os valores para os dados originais?')) return;
+  state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  recalcAndRender();
+  showToast('Dados resetados');
+}
+
+// ── MODAL: Nova Linha ──
+function openAddRow() {
+  const container = document.getElementById('newRowValues');
+  let html = '';
+  for (let i = 0; i < 12; i += 2) {
+    html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+      <div>
+        <label class="form-label" style="font-size:10px;">${MESES_SHORT[i]}</label>
+        <input class="form-input" type="number" id="nrv${i}" value="0" step="0.01">
+      </div>
+      <div>
+        <label class="form-label" style="font-size:10px;">${MESES_SHORT[i+1]}</label>
+        <input class="form-input" type="number" id="nrv${i+1}" value="0" step="0.01">
+      </div>
+    </div>`;
+  }
+  container.innerHTML = html;
+  document.getElementById('newRowName').value = '';
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('newRowName').focus(), 100);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function confirmAddRow() {
+  const nome = document.getElementById('newRowName').value.trim();
+  if (!nome) { alert('Informe o nome da categoria.'); return; }
+  const tipo = document.getElementById('newRowType').value;
+  const valores = [];
+  for (let i = 0; i < 12; i++) {
+    valores.push(parseFloat(document.getElementById('nrv' + i).value) || 0);
+  }
+  state.categorias.push({ nome, valores, editavel: true, tipo });
+  closeModal();
+  recalcAndRender();
+  showToast('Categoria "' + nome + '" adicionada!');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ── EXPORT CSV ──
+// ── SALVAR / CARREGAR (localStorage) ──
+const STORAGE_KEY = 'beekeeper_fluxo_2026';
+
+function saveToLocal() {
+  const payload = {
+    state: state,
+    metas: metas,
+    notes: document.getElementById('notesArea').value,
+    savedAt: new Date().toLocaleString('pt-BR'),
+  };
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    const ind = document.getElementById('saveIndicator');
+    ind.textContent = '✓ Salvo às ' + payload.savedAt;
+    showToast('✓ Dados salvos no navegador!');
+    document.getElementById('btnSalvar').style.background = '#1A7A4A';
+    document.getElementById('btnSalvar').style.color = '#fff';
+    setTimeout(() => {
+      document.getElementById('btnSalvar').style.background = '';
+      document.getElementById('btnSalvar').style.color = '';
+    }, 2000);
+  } catch(e) {
+    showToast('Erro ao salvar. Tente exportar HTML.');
+  }
+}
+
+function loadFromLocal() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const payload = JSON.parse(raw);
+    if (payload.state) state = payload.state;
+    if (payload.metas) metas = payload.metas;
+    if (payload.notes) document.getElementById('notesArea').value = payload.notes;
+    // Garante que toda categoria tenha o campo itens, mesmo vindo de save antigo
+    if (state.categorias) state.categorias.forEach(c => { if (!c.itens) c.itens = {}; });
+    const ind = document.getElementById('saveIndicator');
+    ind.textContent = '✓ Carregado — salvo em ' + payload.savedAt;
+    return true;
+  } catch(e) { return false; }
+}
+
+// Salvar automaticamente ao editar qualquer célula (nome de item, sem precisar recalcular tudo)
+function autoSaveSilent() {
+  autoSave();
+}
+function autoSave() {
+  const payload = {
+    state: state,
+    metas: metas,
+    notes: document.getElementById('notesArea').value,
+    savedAt: new Date().toLocaleString('pt-BR'),
+  };
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    document.getElementById('saveIndicator').textContent = '● Auto-salvo às ' + payload.savedAt;
+  } catch(e) {}
+}
+
+// ── EXPORTAR HTML ATUALIZADO ──
+function exportHTML() {
+  // Pega o HTML atual e injeta os dados atuais no DEFAULT_DATA e metas
+  let html = document.documentElement.outerHTML;
+
+  // Remove qualquer bloco __SAVED_STATE__ já embutido (de exportações anteriores),
+  // para nunca acumular múltiplas cópias no arquivo.
+  html = html.replace(/<script>\s*\/\/ DADOS SALVOS EM:[\s\S]*?<\/script>/, '');
+
+  // Substitui DEFAULT_DATA no HTML exportado
+  const newData = JSON.stringify(state, null, 2);
+  const newMetas = JSON.stringify(metas);
+
+  // Injeta via script inline no head
+  const inject = `<script>
+  // DADOS SALVOS EM: ${new Date().toLocaleString('pt-BR')}
+  window.__SAVED_STATE__ = ${newData};
+  window.__SAVED_METAS__ = ${newMetas};
+  window.__SAVED_NOTES__ = ${JSON.stringify(document.getElementById('notesArea').value)};
+  <\/script>`;
+
+  html = html.replace('</head>', inject + '</head>');
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'beekeeper_fluxo_caixa_2026_SALVO.html';
+  a.click();
+  showToast('HTML exportado com dados atuais!');
+}
+
+// ── EXPORT CSV ──
+function exportCSV() {
+  let csv = 'Categoria,' + MESES.join(',') + '\n';
+  state.categorias.forEach(c => { csv += c.nome + ',' + c.valores.join(',') + '\n'; });
+  csv += 'Resultado do Mes,' + state.saldoOp.join(',') + '\n';
+  csv += 'Lucro Bruto Agencia,' + state.saldoFinal.join(',') + '\n';
+  csv += 'Meta,' + metas.join(',') + '\n';
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'beekeeper_fluxo_caixa_2026.csv';
+  a.click();
+  showToast('CSV exportado com sucesso!');
+}
+
+// ── PRINT ──
+function printPage() { window.print(); }
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── CUTOFF POR DATA ──
+function calcCutoffFromDate(dateStr) {
+  // Um mês só é "Realizado" se já terminou completamente
+  // Ex: data 14/05/2026 → Abril (idx 3) é o último realizado (maio ainda não fechou)
+  // Ex: data 01/06/2026 → Maio (idx 4) é o último realizado
+  const d = new Date(dateStr + 'T00:00:00');
+  const year = d.getFullYear();
+  const month = d.getMonth(); // 0-based
+  if (year < 2026) return -1;
+  if (year > 2026) return 11;
+  // Se é o primeiro dia do mês, o mês anterior fechou
+  if (d.getDate() === 1) return month - 1;
+  // Qualquer outro dia: o mês anterior ao atual fechou
+  return month - 1;
+}
+
+function setDateCutoff(dateStr) {
+  if (!dateStr) return;
+  cutoff = Math.max(-1, Math.min(11, calcCutoffFromDate(dateStr)));
+  updatePeriodLabel();
+  recalcAndRender();
+  const label = cutoff < 0 ? 'nenhum mês realizado' : MESES[cutoff];
+  showToast('Realizado até ' + label);
+}
+
+function updatePeriodLabel() {
+  const next = cutoff < 11 ? MESES[cutoff+1] : null;
+  const realLabel = cutoff < 0 ? 'nenhum mês' : MESES[cutoff];
+  document.getElementById('periodLabel').textContent =
+    'Janeiro a Dezembro · Realizado até ' + realLabel +
+    (next ? ' · Previsto de ' + next + ' em diante' : cutoff === 11 ? ' · 100% Realizado' : '');
+}
+
+function initDate() {
+  // Data padrão: hoje
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = String(today.getMonth()+1).padStart(2,'0');
+  const d = String(today.getDate()).padStart(2,'0');
+  const iso = y+'-'+m+'-'+d;
+  document.getElementById('refDateInput').value = iso;
+  cutoff = Math.max(-1, Math.min(11, calcCutoffFromDate(iso)));
+}
+
+// ── INIT ──
+initDate();
+updatePeriodLabel();
+
+// Carregar dados salvos.
+// Prioridade: localStorage (sempre mais recente, pois reflete a última edição feita
+// neste navegador) > __SAVED_STATE__ embutido (snapshot do momento da exportação) > DEFAULT.
+// Isso evita que reabrir um arquivo exportado apague edições feitas depois da exportação.
+const carregouDoLocal = loadFromLocal();
+if (!carregouDoLocal && window.__SAVED_STATE__) {
+  state = window.__SAVED_STATE__;
+  metas = window.__SAVED_METAS__ || metas;
+  setTimeout(() => {
+    if (window.__SAVED_NOTES__) document.getElementById('notesArea').value = window.__SAVED_NOTES__;
+    document.getElementById('saveIndicator').textContent = '✓ Dados carregados do arquivo exportado';
+  }, 100);
+}
+// Garante que toda categoria tenha o campo itens, mesmo vindo de dados antigos
+state.categorias.forEach(c => { if (!c.itens) c.itens = {}; });
+// Sincroniza o localStorage com o que foi efetivamente carregado, para não ficar desalinhado
+try {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    state: state, metas: metas,
+    notes: document.getElementById('notesArea').value,
+    savedAt: new Date().toLocaleString('pt-BR'),
+  }));
+} catch(e) {}
+recalcAndRender(true);
+
+// Salvar notas ao digitar
+document.getElementById('notesArea').addEventListener('input', () => autoSave());
+</script>
+
+
+</body></html>

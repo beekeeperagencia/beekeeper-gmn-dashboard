@@ -25,8 +25,16 @@ Copie `.env.example` para `.env` e preencha:
 | Variável | Para quê |
 |---|---|
 | `GOOGLE_PLACES_KEY` | Liga os dados reais. Ative "Places API (New)" no Google Cloud e defina um teto de orçamento lá. |
-| `LEAD_WEBHOOK_URL` | Recebe cada lead em JSON. Sem ela o lead fica só no log do servidor. |
+| `LEAD_WEBHOOK_URL` | Recebe cada lead em JSON. Use o endereço da planilha (veja abaixo). Sem ela o lead fica só no log do servidor. |
 | `WHATSAPP_NUMBER` | Mostra o botão de WhatsApp da agência no fim do plano. |
+
+## Leads: planilha do Google + CRM de prospecção
+
+1. Siga as instruções no topo de `integracoes/planilha-leads.gs` para criar a planilha e publicar o script.
+2. Coloque o endereço gerado (com `?token=...`) em `LEAD_WEBHOOK_URL`. Cada lead vira uma linha na planilha.
+3. No CRM de prospecção (`beekeeper-dashboards/beekeeper_crm_prospeccao.html`), clique em **⬇ Raio-X** e cole o mesmo endereço na primeira vez. Os leads novos entram em "Captação" com origem "Raio-X" e follow-up para o dia; quem já está no CRM ganha só um registro no histórico.
+
+O script da planilha ainda não foi executado no Google; o fluxo foi testado com um servidor local que imita o mesmo contrato.
 
 ## Publicar
 

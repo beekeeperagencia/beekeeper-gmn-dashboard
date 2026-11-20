@@ -1,0 +1,11 @@
+{
+  "name": "beekeeper-raio-x",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Raio-X do Google Meu Negócio: nota pública do perfil comparada com concorrentes + plano de ação",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=18" }
+}

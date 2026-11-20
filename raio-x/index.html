@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raio-X do Google Meu Negócio | Beekeeper</title>
+<meta name="description" content="Descubra em segundos a nota do seu perfil no Google, como você está frente aos concorrentes da região e o que fazer para aparecer mais.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --honey: #F5A623; --honey-dark: #D4890A; --black: #111111; --surface: #1A1A1A;
+    --surface2: #242424; --border: #2E2E2E; --text: #F0F0F0; --text-muted: #9A9A9A;
+    --green: #22C55E; --red: #EF4444; --yellow: #EAB308;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--text); min-height: 100vh; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, .num { font-family: 'Space Grotesk', sans-serif; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+  header { padding: 18px 0; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 17px; }
+  .logo-icon { width: 30px; height: 30px; background: var(--honey); border-radius: 8px; display: grid; place-items: center; font-size: 16px; }
+  .logo span { color: var(--honey); }
+
+  .hero { padding: 28px 0 8px; }
+  .hero h1 { font-size: clamp(30px, 8vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }
+  .hero h1 em { font-style: normal; color: var(--honey); }
+  .hero p { color: var(--text-muted); margin-top: 14px; font-size: 16px; max-width: 520px; }
+
+  form.search { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+  input { width: 100%; font: inherit; font-size: 16px; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 15px 16px; outline: none; }
+  input::placeholder { color: #6b6b6b; }
+  input:focus-visible { border-color: var(--honey); box-shadow: 0 0 0 3px rgba(245,166,35,.2); }
+  button, .btn { font: inherit; font-weight: 700; font-size: 16px; color: #111; background: var(--honey); border: 0; border-radius: 12px; padding: 15px 20px; cursor: pointer; text-align: center; text-decoration: none; display: block; }
+  button:hover, .btn:hover { background: var(--honey-dark); }
+  button:focus-visible, .btn:focus-visible, a:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  button[disabled] { opacity: .6; cursor: progress; }
+  @media (min-width: 560px) { form.search { flex-direction: row; } form.search button { white-space: nowrap; } }
+  .hint { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+  .error { color: #ff8a8a; font-size: 14px; margin-top: 10px; }
+  .error:empty { display: none; }
+
+  #result { padding: 28px 0 56px; display: none; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-top: 14px; }
+  .card h2 { font-size: 18px; margin-bottom: 4px; }
+  .card .sub { color: var(--text-muted); font-size: 14px; margin-bottom: 14px; }
+  .demo { background: rgba(245,166,35,.1); border: 1px solid rgba(245,166,35,.4); color: #ffd58a; border-radius: 12px; padding: 12px 14px; font-size: 14px; }
+
+  .score { display: flex; align-items: center; gap: 18px; }
+  .ring { position: relative; width: 116px; height: 116px; flex: none; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 10; }
+  .ring .track { stroke: var(--surface2); }
+  .ring .val { stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+  .ring .num { position: absolute; inset: 0; display: grid; place-items: center; font-size: 36px; font-weight: 700; }
+  .ring .num small { display: block; font-size: 11px; font-weight: 500; color: var(--text-muted); text-align: center; margin-top: -6px; font-family: 'Inter', sans-serif; }
+  .score h2 { font-size: 20px; line-height: 1.2; overflow-wrap: anywhere; }
+  .score .meta { color: var(--text-muted); font-size: 13px; margin-top: 4px; overflow-wrap: anywhere; }
+  .badge { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 600; padding: 5px 10px; border-radius: 999px; }
+  .critico { color: var(--red); } .atencao { color: var(--yellow); } .bom { color: #84cc16; } .otimo { color: var(--green); }
+  .badge.critico { background: rgba(239,68,68,.14); } .badge.atencao { background: rgba(234,179,8,.14); }
+  .badge.bom { background: rgba(132,204,22,.14); } .badge.otimo { background: rgba(34,197,94,.14); }
+
+  .problem { display: flex; gap: 12px; padding: 14px 0; border-top: 1px solid var(--border); }
+  .problem:first-of-type { border-top: 0; padding-top: 4px; }
+  .pts { flex: none; width: 52px; height: 44px; border-radius: 10px; background: rgba(239,68,68,.12); color: #ff8a8a; display: grid; place-items: center; font-weight: 700; font-size: 14px; font-family: 'Space Grotesk', sans-serif; }
+  .problem h3 { font-size: 15px; font-family: 'Inter', sans-serif; font-weight: 600; }
+  .problem p { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+  .problem ol { margin: 10px 0 0 18px; font-size: 14px; color: var(--text); }
+  .problem li { margin-top: 6px; }
+
+  .bar-row { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; font-size: 14px; margin-top: 12px; }
+  .bar-row .v { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .bar { grid-column: 1 / -1; height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 99px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; color: var(--text-muted); font-weight: 500; font-size: 12px; padding: 0 6px 8px; }
+  td { padding: 10px 6px; border-top: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+  td.name { overflow-wrap: anywhere; }
+  th.r, td.r { text-align: right; white-space: nowrap; }
+  tr.self td { background: rgba(245,166,35,.1); color: var(--honey); font-weight: 600; }
+
+  .gate { border-color: rgba(245,166,35,.5); background: linear-gradient(180deg, rgba(245,166,35,.09), var(--surface) 60%); }
+  .gate form { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .gate input { background: var(--black); }
+  label { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 4px; }
+  .fine { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
+  .wa { background: #22C55E; margin-top: 16px; } .wa:hover { background: #16a34a; }
+  footer { border-top: 1px solid var(--border); padding: 20px 0 32px; color: var(--text-muted); font-size: 12px; }
+  @media (prefers-reduced-motion: reduce) { .ring .val { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="logo"><div class="logo-icon">🐝</div>Beekeeper <span>Raio-X</span></div></header>
+
+  <main>
+    <section class="hero">
+      <h1>Seu perfil no Google está <em>trazendo ou perdendo</em> clientes?</h1>
+      <p>Digite o nome da sua empresa e veja em segundos a nota do seu perfil, sua posição frente aos concorrentes da região e o que corrigir primeiro.</p>
+      <form class="search" id="search">
+        <input id="q" name="q" autocomplete="organization" placeholder="Ex.: Padaria Central Campinas" aria-label="Nome da empresa e cidade" required minlength="3" maxlength="120">
+        <button id="go" type="submit">Fazer meu Raio-X</button>
+      </form>
+      <p class="hint">Grátis, sem cadastro. Inclua a cidade para um resultado mais preciso.</p>
+      <p class="error" id="err" role="alert"></p>
+    </section>
+
+    <section id="result" aria-live="polite"></section>
+  </main>
+
+  <footer>Análise feita com dados públicos do perfil no Google. A nota é um diagnóstico da Beekeeper, não uma métrica oficial do Google.</footer>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const num = n => Number(n || 0).toLocaleString('pt-BR');
+const stars = n => Number(n || 0).toFixed(1).replace('.', ',');
+const COLORS = { critico: 'var(--red)', atencao: 'var(--yellow)', bom: '#84cc16', otimo: 'var(--green)' };
+let current = null;
+
+async function api(url, opts) {
+  let res;
+  try { res = await fetch(url, opts); } catch { throw new Error('Sem conexão. Verifique sua internet e tente de novo.'); }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Algo deu errado. Tente de novo.');
+  return data;
+}
+
+$('#search').addEventListener('submit', async e => {
+  e.preventDefault();
+  const q = $('#q').value.trim();
+  const btn = $('#go');
+  $('#err').textContent = '';
+  btn.disabled = true; btn.textContent = 'Analisando…';
+  try {
+    current = await api('/api/raio-x?q=' + encodeURIComponent(q));
+    render(current);
+  } catch (err) {
+    $('#err').textContent = err.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Fazer meu Raio-X';
+  }
+});
+
+function problemHtml(p) {
+  return `<div class="problem"><div class="pts">+${p.points}</div><div>
+    <h3>${esc(p.title)}</h3><p>${esc(p.why)}</p>
+    ${p.steps ? `<ol>${p.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>` : ''}
+  </div></div>`;
+}
+
+function render(r) {
+  const b = r.business, s = r.score, lv = s.level.key;
+  const C = 2 * Math.PI * 48;
+  const self = r.ranking.find(p => p.self);
+  const meta = [b.category, b.address].filter(Boolean).join(' · ');
+
+  $('#result').innerHTML = `
+    ${r.demo ? `<div class="demo"><strong>Demonstração.</strong> Os números abaixo são de exemplo e não representam o perfil real desta empresa.</div>` : ''}
+    <div class="card score">
+      <div class="ring">
+        <svg width="116" height="116" viewBox="0 0 116 116" aria-hidden="true">
+          <circle class="track" cx="58" cy="58" r="48"/>
+          <circle class="val" id="arc" cx="58" cy="58" r="48" stroke="${COLORS[lv]}" stroke-dasharray="${C}" stroke-dashoffset="${C}"/>
+        </svg>
+        <div class="num"><div>${s.total}<small>de 100</small></div></div>
+      </div>
+      <div>
+        <h2>${esc(b.name)}</h2>
+        <div class="meta">${esc(meta)}</div>
+        <div class="meta">★ ${stars(b.rating)} · ${num(b.reviewCount)} avaliações</div>
+        <span class="badge ${lv}">${esc(s.level.label)}</span>
+      </div>
+    </div>
+
+    ${r.problems.length ? `<div class="card">
+      <h2>O que mais está custando clientes</h2>
+      <div class="sub">Os ${r.problems.length} pontos com maior impacto na sua nota.</div>
+      ${r.problems.map(problemHtml).join('')}
+    </div>` : `<div class="card"><h2>Perfil redondo</h2><div class="sub">Não encontramos pontos a corrigir nos dados públicos.</div></div>`}
+
+    <div class="card">
+      <h2>Você contra a região</h2>
+      <div class="sub">${self ? `${self.position}º lugar entre ${r.ranking.length} empresas parecidas perto de você.` : ''}</div>
+      <table>
+        <thead><tr><th>#</th><th>Empresa</th><th class="r">Nota</th><th class="r">Avaliações</th></tr></thead>
+        <tbody>${r.ranking.map(p => `<tr class="${p.self ? 'self' : ''}"><td>${p.position}</td><td class="name">${esc(p.name)}${p.self ? ' (você)' : ''}</td><td class="r">★ ${stars(p.rating)}</td><td class="r">${num(p.reviewCount)}</td></tr>`).join('')}</tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Nota por critério</h2>
+      ${s.criteria.map(c => {
+        const pct = Math.round(c.earned / c.max * 100);
+        const col = pct >= 80 ? 'var(--green)' : pct >= 40 ? 'var(--yellow)' : 'var(--red)';
+        return `<div class="bar-row"><span>${esc(c.label)}</span><span class="v">${c.earned}/${c.max}</span><div class="bar"><i style="width:${Math.max(pct, 3)}%;background:${col}"></i></div></div>`;
+      }).join('')}
+    </div>
+
+    ${r.planSize ? `<div class="card gate" id="gate">
+      <h2>Receba o plano de ação completo</h2>
+      <div class="sub">O passo a passo dos ${r.planSize} pontos que podem levar sua nota de ${s.total} para até ${s.total + r.pointsAvailable}.</div>
+      <form id="lead">
+        <div><label for="ln">Seu nome</label><input id="ln" autocomplete="name" required minlength="2" maxlength="80"></div>
+        <div><label for="lw">WhatsApp com DDD</label><input id="lw" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 99999-9999" required></div>
+        <button id="lgo" type="submit">Ver meu plano completo</button>
+        <p class="error" id="lerr" role="alert"></p>
+      </form>
+      <p class="fine">Usamos seu contato só para falar sobre este diagnóstico.</p>
+    </div>` : ''}`;
+
+  $('#result').style.display = 'block';
+  requestAnimationFrame(() => { $('#arc').style.strokeDashoffset = C * (1 - s.total / 100); });
+  $('#result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('#lead')?.addEventListener('submit', sendLead);
+}
+
+async function sendLead(e) {
+  e.preventDefault();
+  const btn = $('#lgo');
+  $('#lerr').textContent = '';
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  try {
+    const data = await api('/api/lead', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: $('#ln').value, whatsapp: $('#lw').value, query: current.query }),
+    });
+    const msg = encodeURIComponent(`Olá! Fiz o Raio-X de ${current.business.name} (nota ${current.score.total}) e quero ajuda para melhorar meu perfil no Google.`);
+    $('#gate').innerHTML = `
+      <h2>Seu plano de ação</h2>
+      <div class="sub">Em ordem de impacto. Os pontos ao lado mostram quanto cada item pode somar à sua nota.</div>
+      ${data.plan.map(problemHtml).join('')}
+      ${data.whatsapp ? `<a class="btn wa" href="https://wa.me/${esc(data.whatsapp)}?text=${msg}" target="_blank" rel="noopener">Quero que a Beekeeper faça isso por mim</a>` : ''}`;
+  } catch (err) {
+    $('#lerr').textContent = err.message;
+    btn.disabled = false; btn.textContent = 'Ver meu plano completo';
+  }
+}
+</script>
+</body>
+</html>

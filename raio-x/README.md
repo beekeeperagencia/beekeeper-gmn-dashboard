@@ -26,7 +26,7 @@ Copie `.env.example` para `.env` e preencha:
 |---|---|
 | `GOOGLE_PLACES_KEY` | Liga os dados reais. Ative "Places API (New)" no Google Cloud e defina um teto de orçamento lá. |
 | `LEAD_WEBHOOK_URL` | Recebe cada lead em JSON. Use o endereço da planilha (veja abaixo). Sem ela o lead fica só no log do servidor. |
-| `WHATSAPP_NUMBER` | Mostra o botão de WhatsApp da agência no fim do plano. |
+| `WHATSAPP_NUMBER` | Opcional. Troca o WhatsApp do botão final; o padrão é o número da Beekeeper em `api/lead.js`. |
 
 ## Leads: planilha do Google + CRM de prospecção
 

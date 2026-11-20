@@ -1,6 +1,9 @@
 const { getReport, rateLimited } = require('../lib/report');
 const { clientIp } = require('./raio-x');
 
+// WhatsApp comercial da Beekeeper (DDI + DDD + número). WHATSAPP_NUMBER sobrescreve.
+const DEFAULT_WHATSAPP = '5562992771309';
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
   if (rateLimited('lead:' + clientIp(req))) return res.status(429).json({ error: 'Muitas tentativas. Tente de novo em alguns minutos.' });
@@ -45,6 +48,6 @@ module.exports = async function handler(req, res) {
 
   res.status(200).json({
     plan: report.plan,
-    whatsapp: (process.env.WHATSAPP_NUMBER || '').replace(/\D/g, '') || null,
+    whatsapp: (process.env.WHATSAPP_NUMBER || DEFAULT_WHATSAPP).replace(/\D/g, '') || null,
   });
 };
